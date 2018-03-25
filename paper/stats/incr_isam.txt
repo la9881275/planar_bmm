@@ -1,0 +1,1046 @@
+generated 343 poses and 28 planes with 2736 plane measurements
+time step 1
+
+step 0
+Time for update: 0.00039506
+time step 2
+.
+Time for update: 0.000562191
+time step 3
+.
+Time for update: 0.000633955
+time step 4
+.
+Time for update: 0.000732183
+time step 5
+.
+Time for update: 0.000581026
+time step 6
+.
+Time for update: 0.000541925
+time step 7
+.
+Time for update: 0.000605106
+time step 8
+.
+Time for update: 0.00083375
+time step 9
+.
+Time for update: 0.000878811
+time step 10
+.
+Time for update: 0.000997782
+time step 11
+.
+Time for update: 0.00116587
+time step 12
+.
+Time for update: 0.00128984
+time step 13
+.
+Time for update: 0.00138927
+time step 14
+.
+Time for update: 0.00152302
+time step 15
+.
+Time for update: 0.00164723
+time step 16
+.
+Time for update: 0.00155616
+time step 17
+.
+Time for update: 0.00165725
+time step 18
+.
+Time for update: 0.00185108
+time step 19
+.
+Time for update: 0.00195599
+time step 20
+.
+Time for update: 0.00173521
+time step 21
+
+step 20
+Time for update: 0.00485706
+time step 22
+.
+Time for update: 0.00142384
+time step 23
+.
+Time for update: 0.000926018
+time step 24
+.
+Time for update: 0.00105906
+time step 25
+.
+Time for update: 0.00118184
+time step 26
+.
+Time for update: 0.00132489
+time step 27
+.
+Time for update: 0.00152397
+time step 28
+.
+Time for update: 0.00161099
+time step 29
+.
+Time for update: 0.00176215
+time step 30
+.
+Time for update: 0.00191998
+time step 31
+.
+Time for update: 0.00200582
+time step 32
+.
+Time for update: 0.00154209
+time step 33
+.
+Time for update: 0.00162387
+time step 34
+.
+Time for update: 0.00182414
+time step 35
+.
+Time for update: 0.00124383
+time step 36
+.
+Time for update: 0.00137782
+time step 37
+.
+Time for update: 0.00155592
+time step 38
+.
+Time for update: 0.00163007
+time step 39
+.
+Time for update: 0.00221491
+time step 40
+.
+Time for update: 0.00240493
+time step 41
+
+step 40
+Time for update: 0.0101242
+time step 42
+.
+Time for update: 0.00251198
+time step 43
+.
+Time for update: 0.00219393
+time step 44
+.
+Time for update: 0.00239301
+time step 45
+.
+Time for update: 0.00257111
+time step 46
+.
+Time for update: 0.00290585
+time step 47
+.
+Time for update: 0.00502229
+time step 48
+.
+Time for update: 0.00536871
+time step 49
+.
+Time for update: 0.00576115
+time step 50
+.
+Time for update: 0.00448394
+time step 51
+.
+Time for update: 0.0049262
+time step 52
+.
+Time for update: 0.00508976
+time step 53
+.
+Time for update: 0.00532603
+time step 54
+.
+Time for update: 0.00562692
+time step 55
+.
+Time for update: 0.00381899
+time step 56
+.
+Time for update: 0.00398922
+time step 57
+.
+Time for update: 0.00421214
+time step 58
+.
+Time for update: 0.00333786
+time step 59
+.
+Time for update: 0.0035181
+time step 60
+.
+Time for update: 0.00364113
+time step 61
+
+step 60
+Time for update: 0.014677
+time step 62
+.
+Time for update: 0.00357103
+time step 63
+.
+Time for update: 0.00247598
+time step 64
+.
+Time for update: 0.00272632
+time step 65
+.
+Time for update: 0.00287914
+time step 66
+.
+Time for update: 0.00319099
+time step 67
+.
+Time for update: 0.00341392
+time step 68
+.
+Time for update: 0.0034349
+time step 69
+.
+Time for update: 0.00364804
+time step 70
+.
+Time for update: 0.00411725
+time step 71
+.
+Time for update: 0.00410199
+time step 72
+.
+Time for update: 0.00338888
+time step 73
+.
+Time for update: 0.00358605
+time step 74
+.
+Time for update: 0.00386214
+time step 75
+.
+Time for update: 0.00402522
+time step 76
+.
+Time for update: 0.00419426
+time step 77
+.
+Time for update: 0.00349593
+time step 78
+.
+Time for update: 0.00388908
+time step 79
+.
+Time for update: 0.0049932
+time step 80
+.
+Time for update: 0.00524521
+time step 81
+
+step 80
+Time for update: 0.0193172
+time step 82
+.
+Time for update: 0.00500083
+time step 83
+.
+Time for update: 0.00481319
+time step 84
+.
+Time for update: 0.00502086
+time step 85
+.
+Time for update: 0.00413108
+time step 86
+.
+Time for update: 0.00431514
+time step 87
+.
+Time for update: 0.00451207
+time step 88
+.
+Time for update: 0.00502801
+time step 89
+.
+Time for update: 0.005018
+time step 90
+.
+Time for update: 0.00430083
+time step 91
+.
+Time for update: 0.00217485
+time step 92
+.
+Time for update: 0.00230694
+time step 93
+.
+Time for update: 0.00367713
+time step 94
+.
+Time for update: 0.00388503
+time step 95
+.
+Time for update: 0.00405622
+time step 96
+.
+Time for update: 0.00440598
+time step 97
+.
+Time for update: 0.00282979
+time step 98
+.
+Time for update: 0.00299883
+time step 99
+.
+Time for update: 0.00342774
+time step 100
+.
+Time for update: 0.00358891
+time step 101
+
+step 100
+Time for update: 0.025368
+time step 102
+.
+Time for update: 0.00803089
+time step 103
+.
+Time for update: 0.00567508
+time step 104
+.
+Time for update: 0.00620198
+time step 105
+.
+Time for update: 0.00519323
+time step 106
+.
+Time for update: 0.00536275
+time step 107
+.
+Time for update: 0.00525165
+time step 108
+.
+Time for update: 0.00571489
+time step 109
+.
+Time for update: 0.00580502
+time step 110
+.
+Time for update: 0.00636697
+time step 111
+.
+Time for update: 0.00650597
+time step 112
+.
+Time for update: 0.00663924
+time step 113
+.
+Time for update: 0.00581932
+time step 114
+.
+Time for update: 0.00615597
+time step 115
+.
+Time for update: 0.00748277
+time step 116
+.
+Time for update: 0.0077219
+time step 117
+.
+Time for update: 0.010077
+time step 118
+.
+Time for update: 0.010633
+time step 119
+.
+Time for update: 0.012671
+time step 120
+.
+Time for update: 0.0113242
+time step 121
+
+step 120
+Time for update: 0.0296581
+time step 122
+.
+Time for update: 0.00233507
+time step 123
+.
+Time for update: 0.00213623
+time step 124
+.
+Time for update: 0.00222111
+time step 125
+.
+Time for update: 0.00237012
+time step 126
+.
+Time for update: 0.00260997
+time step 127
+.
+Time for update: 0.0023129
+time step 128
+.
+Time for update: 0.00229406
+time step 129
+.
+Time for update: 0.002496
+time step 130
+.
+Time for update: 0.00176787
+time step 131
+.
+Time for update: 0.00192094
+time step 132
+.
+Time for update: 0.00206518
+time step 133
+.
+Time for update: 0.00229716
+time step 134
+.
+Time for update: 0.00255704
+time step 135
+.
+Time for update: 0.00362206
+time step 136
+.
+Time for update: 0.0044179
+time step 137
+.
+Time for update: 0.00496197
+time step 138
+.
+Time for update: 0.00433993
+time step 139
+.
+Time for update: 0.00462604
+time step 140
+.
+Time for update: 0.00469923
+time step 141
+
+step 140
+Time for update: 0.0356801
+time step 142
+.
+Time for update: 0.00316191
+time step 143
+.
+Time for update: 0.00149894
+time step 144
+.
+Time for update: 0.00223899
+time step 145
+.
+Time for update: 0.0028379
+time step 146
+.
+Time for update: 0.00311708
+time step 147
+.
+Time for update: 0.00383091
+time step 148
+.
+Time for update: 0.00406027
+time step 149
+.
+Time for update: 0.00482702
+time step 150
+.
+Time for update: 0.00527906
+time step 151
+.
+Time for update: 0.00504494
+time step 152
+.
+Time for update: 0.00519872
+time step 153
+.
+Time for update: 0.00542021
+time step 154
+.
+Time for update: 0.00575089
+time step 155
+.
+Time for update: 0.00529289
+time step 156
+.
+Time for update: 0.00574994
+time step 157
+.
+Time for update: 0.00393701
+time step 158
+.
+Time for update: 0.00412798
+time step 159
+.
+Time for update: 0.00345182
+time step 160
+.
+Time for update: 0.00442314
+time step 161
+
+step 160
+Time for update: 0.0417333
+time step 162
+.
+Time for update: 0.00655484
+time step 163
+.
+Time for update: 0.0050621
+time step 164
+.
+Time for update: 0.00687909
+time step 165
+.
+Time for update: 0.00869894
+time step 166
+.
+Time for update: 0.00778508
+time step 167
+.
+Time for update: 0.00803995
+time step 168
+.
+Time for update: 0.00831413
+time step 169
+.
+Time for update: 0.00905514
+time step 170
+.
+Time for update: 0.0109172
+time step 171
+.
+Time for update: 0.0125098
+time step 172
+.
+Time for update: 0.0140219
+time step 173
+.
+Time for update: 0.0145159
+time step 174
+.
+Time for update: 0.0144629
+time step 175
+.
+Time for update: 0.0149939
+time step 176
+.
+Time for update: 0.0155709
+time step 177
+.
+Time for update: 0.0159962
+time step 178
+.
+Time for update: 0.0198419
+time step 179
+.
+Time for update: 0.019999
+time step 180
+.
+Time for update: 0.0207422
+time step 181
+
+step 180
+Time for update: 0.0492249
+time step 182
+.
+Time for update: 0.00414419
+time step 183
+.
+Time for update: 0.00306892
+time step 184
+.
+Time for update: 0.00455499
+time step 185
+.
+Time for update: 0.00474501
+time step 186
+.
+Time for update: 0.005162
+time step 187
+.
+Time for update: 0.00585389
+time step 188
+.
+Time for update: 0.0062809
+time step 189
+.
+Time for update: 0.00669909
+time step 190
+.
+Time for update: 0.00718713
+time step 191
+.
+Time for update: 0.00740671
+time step 192
+.
+Time for update: 0.00880098
+time step 193
+.
+Time for update: 0.00914788
+time step 194
+.
+Time for update: 0.0106211
+time step 195
+.
+Time for update: 0.0111601
+time step 196
+.
+Time for update: 0.010848
+time step 197
+.
+Time for update: 0.0114191
+time step 198
+.
+Time for update: 0.011456
+time step 199
+.
+Time for update: 0.0116649
+time step 200
+.
+Time for update: 0.0109923
+time step 201
+
+step 200
+Time for update: 0.058188
+time step 202
+.
+Time for update: 0.00422502
+time step 203
+.
+Time for update: 0.0035181
+time step 204
+.
+Time for update: 0.00339365
+time step 205
+.
+Time for update: 0.00372505
+time step 206
+.
+Time for update: 0.00408697
+time step 207
+.
+Time for update: 0.00585294
+time step 208
+.
+Time for update: 0.0049758
+time step 209
+.
+Time for update: 0.00523806
+time step 210
+.
+Time for update: 0.00554132
+time step 211
+.
+Time for update: 0.00598073
+time step 212
+.
+Time for update: 0.00644135
+time step 213
+.
+Time for update: 0.00653911
+time step 214
+.
+Time for update: 0.00895166
+time step 215
+.
+Time for update: 0.00900388
+time step 216
+.
+Time for update: 0.00969219
+time step 217
+.
+Time for update: 0.0103791
+time step 218
+.
+Time for update: 0.0103528
+time step 219
+.
+Time for update: 0.00974107
+time step 220
+.
+Time for update: 0.00956297
+time step 221
+
+step 220
+Time for update: 0.071069
+time step 222
+.
+Time for update: 0.00722265
+time step 223
+.
+Time for update: 0.00535202
+time step 224
+.
+Time for update: 0.00493097
+time step 225
+.
+Time for update: 0.00525308
+time step 226
+.
+Time for update: 0.00526261
+time step 227
+.
+Time for update: 0.00577807
+time step 228
+.
+Time for update: 0.0058322
+time step 229
+.
+Time for update: 0.00630617
+time step 230
+.
+Time for update: 0.00639367
+time step 231
+.
+Time for update: 0.0074718
+time step 232
+.
+Time for update: 0.00810027
+time step 233
+.
+Time for update: 0.00735211
+time step 234
+.
+Time for update: 0.0075798
+time step 235
+.
+Time for update: 0.00827909
+time step 236
+.
+Time for update: 0.00833631
+time step 237
+.
+Time for update: 0.00864911
+time step 238
+.
+Time for update: 0.00888586
+time step 239
+.
+Time for update: 0.00954795
+time step 240
+.
+Time for update: 0.00958014
+time step 241
+
+step 240
+Time for update: 0.0783982
+time step 242
+.
+Time for update: 0.00947714
+time step 243
+.
+Time for update: 0.0112059
+time step 244
+.
+Time for update: 0.0120482
+time step 245
+.
+Time for update: 0.00914812
+time step 246
+.
+Time for update: 0.00887609
+time step 247
+.
+Time for update: 0.0101411
+time step 248
+.
+Time for update: 0.0103271
+time step 249
+.
+Time for update: 0.0107429
+time step 250
+.
+Time for update: 0.0116138
+time step 251
+.
+Time for update: 0.0114849
+time step 252
+.
+Time for update: 0.0150893
+time step 253
+.
+Time for update: 0.0153301
+time step 254
+.
+Time for update: 0.0201249
+time step 255
+.
+Time for update: 0.0210791
+time step 256
+.
+Time for update: 0.0229089
+time step 257
+.
+Time for update: 0.0222042
+time step 258
+.
+Time for update: 0.0230601
+time step 259
+.
+Time for update: 0.023515
+time step 260
+.
+Time for update: 0.0250301
+time step 261
+
+step 260
+Time for update: 0.0913351
+time step 262
+.
+Time for update: 0.0177951
+time step 263
+.
+Time for update: 0.0112739
+time step 264
+.
+Time for update: 0.0121729
+time step 265
+.
+Time for update: 0.0121517
+time step 266
+.
+Time for update: 0.0122709
+time step 267
+.
+Time for update: 0.0127952
+time step 268
+.
+Time for update: 0.012295
+time step 269
+.
+Time for update: 0.00916624
+time step 270
+.
+Time for update: 0.00644207
+time step 271
+.
+Time for update: 0.00651884
+time step 272
+.
+Time for update: 0.00676036
+time step 273
+.
+Time for update: 0.00737715
+time step 274
+.
+Time for update: 0.00741196
+time step 275
+.
+Time for update: 0.00761199
+time step 276
+.
+Time for update: 0.00794506
+time step 277
+.
+Time for update: 0.00857306
+time step 278
+.
+Time for update: 0.00999212
+time step 279
+.
+Time for update: 0.0101833
+time step 280
+.
+Time for update: 0.00637388
+time step 281
+
+step 280
+Time for update: 0.0978498
+time step 282
+.
+Time for update: 0.00715494
+time step 283
+.
+Time for update: 0.00264668
+time step 284
+.
+Time for update: 0.00301123
+time step 285
+.
+Time for update: 0.00340629
+time step 286
+.
+Time for update: 0.00388908
+time step 287
+.
+Time for update: 0.00741506
+time step 288
+.
+Time for update: 0.00949907
+time step 289
+.
+Time for update: 0.00897288
+time step 290
+.
+Time for update: 0.00899577
+time step 291
+.
+Time for update: 0.00898099
+time step 292
+.
+Time for update: 0.0121989
+time step 293
+.
+Time for update: 0.014055
+time step 294
+.
+Time for update: 0.0139871
+time step 295
+.
+Time for update: 0.0150821
+time step 296
+.
+Time for update: 0.0130932
+time step 297
+.
+Time for update: 0.0127213
+time step 298
+.
+Time for update: 0.0127161
+time step 299
+.
+Time for update: 0.013015
+time step 300
+.
+Time for update: 0.0138612
+time step 301
+
+step 300
+Time for update: 0.117959
+time step 302
+.
+Time for update: 0.00483775
+time step 303
+.
+Time for update: 0.00267029
+time step 304
+.
+Time for update: 0.00238299
+time step 305
+.
+Time for update: 0.00260782
+time step 306
+.
+Time for update: 0.00275207
+time step 307
+.
+Time for update: 0.00299788
+time step 308
+.
+Time for update: 0.00317311
+time step 309
+.
+Time for update: 0.003196
+time step 310
+.
+Time for update: 0.00321102
+time step 311
+.
+Time for update: 0.00343704
+time step 312
+.
+Time for update: 0.0036571
+time step 313
+.
+Time for update: 0.00386906
+time step 314
+.
+Time for update: 0.00456309
+time step 315
+.
+Time for update: 0.00475407
+time step 316
+.
+Time for update: 0.00493598
+time step 317
+.
+Time for update: 0.00497699
+time step 318
+.
+Time for update: 0.00538802
+time step 319
+.
+Time for update: 0.0054028
+time step 320
+.
+Time for update: 0.00563812
+time step 321
+
+step 320
+Time for update: 0.121138
+time step 322
+.
+Time for update: 0.0123329
+time step 323
+.
+Time for update: 0.00546503
+time step 324
+.
+Time for update: 0.00573921
+time step 325
+.
+Time for update: 0.00621915
+time step 326
+.
+Time for update: 0.00592399
+time step 327
+.
+Time for update: 0.00619411
+time step 328
+.
+Time for update: 0.00627208
+time step 329
+.
+Time for update: 0.0067749
+time step 330
+.
+Time for update: 0.00710011
+time step 331
+.
+Time for update: 0.00874114
+time step 332
+.
+Time for update: 0.00872111
+time step 333
+.
+Time for update: 0.00856924
+time step 334
+.
+Time for update: 0.00944209
+time step 335
+.
+Time for update: 0.0116792
+time step 336
+.
+Time for update: 0.022943
+time step 337
+.
+Time for update: 0.0282943
+time step 338
+.
+Time for update: 0.028563
+time step 339
+.
+Time for update: 0.030968
+time step 340
+.
+Time for update: 0.03615
+time step 341
+
+step 340
+Time for update: 0.135911
+time step 342
+.
+Time for update: 0.0166278
+chi2=26481.4 normalized chi2=3.25965

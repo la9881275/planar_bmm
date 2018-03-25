@@ -1,0 +1,3833 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass ieeeconf
+\begin_preamble
+\IEEEoverridecommandlockouts
+\overrideIEEEmargins
+
+%\usepackage{times}
+\usepackage{url}
+
+\usepackage[footnotesize]{caption}
+%\usepackage[small]{caption}
+
+\usepackage{flushend}
+\end_preamble
+\options letterpaper, 10pt, conference
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 2
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine natbib_numerical
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+On Mapping and Localization with Infinite Planes
+\end_layout
+
+\begin_layout Plain Layout
+3D Mapping and Localization using Infinite Planes
+\end_layout
+
+\begin_layout Plain Layout
+On Optimization with Infinite Planes with Applications to 3D Mapping and
+ Localization
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Title
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+LARGE 
+\backslash
+bf 
+\end_layout
+
+\end_inset
+
+Simultaneous Localization and Mapping with Infinite Planes
+\end_layout
+
+\begin_layout Author
+Michael Kaess
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+thanks{Michael Kaess is with the Robotics Institute, Carnegie Mellon University,
+ Pittsburgh, PA 15213, USA.
+ {
+\backslash
+tt
+\backslash
+small kaess@cmu.edu}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+thanks{This work was partially supported by the Office of Naval Research
+ under awards N00014-12-1-0093 and N00014-14-1-0373, and by the National
+ Science Foundation under award IIS-1426703.
+ Partial support was also provided by the American Bureau of Shipping.}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Abstract
+Simultaneous localization and mapping with infinite planes is attractive
+ because of the reduced complexity with respect to both sparse point-based
+ and dense volumetric methods.
+ We show how to include infinite planes into a least-squares formulation
+ for mapping, using a homogeneous plane parametrization with a corresponding
+ minimal representation for the optimization.
+ Because it is a minimal representation, it is suitable for use with Gauss-Newto
+n, Powell's Dog Leg and incremental solvers such as iSAM.
+ We also introduce a relative plane formulation that improves convergence.
+ We evaluate our proposed approach on simulated data to show its advantages
+ over alternative solutions.
+ We also introduce a simple mapping system and present experimental results,
+ showing real-time mapping of select indoor environments with a hand-held
+ RGB-D sensor.
+\end_layout
+
+\begin_layout Abstract
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+todo: reference Paul's paper on planar patch reconstruction from DVL
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Abstract
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+reviewer comments to be addressed for journal paper:
+\end_layout
+
+\begin_layout Plain Layout
+- contribution: I suggest to stress more what is the novel contribution.
+ For instance one of the contributions is to propose a homogeneous parametrizati
+on for infinite planes, and then, on page 2, I see the sentence “Hartley
+ and Zisserman [5] provide an excellent introduction to projective geometry
+ and the homogeneous representation of planes used in this work.”.
+ Please clarify this point.
+ I believe that the insight of the paper is that we can parametrize planes
+ using unit quaternion, hence re-using all the optimization-on-manifold
+ machinery that is commonly used for rotations.
+ Also, please describe the differences w.r.t., ref [1].
+\end_layout
+
+\begin_layout Plain Layout
+- presentation: I think it would be clearer to divide section III in the
+ following subsections: A) Parametrization for 3D poses, B) Plane parametrizatio
+n in related work, C) The proposed minimal parametrization for infinite
+ planes.
+ This would clarify the contribution, distinguishing from the representations
+ in related work.
+\end_layout
+
+\begin_layout Plain Layout
+- In many points of the paper I see the claim that the proposed representation
+ is a minimal parametrization.
+ However, the proposed parametrization includes 4 parameters, hence it is
+ not minimal.
+ However it is true that the linear optimization step is done on a minimal
+ parametrization.
+ This is the same as quaternions (which are a nonminimal parametrization)
+ VS exponential coordinates used during optimization (these are minimal).
+ If so, I would suggest to remove/clarify the claim: the formulation is
+ elegant on its own, even without being minimal.
+ 
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+datasets: KinectLogs/2014-09-25.03 (formerly stairs02)
+\end_layout
+
+\begin_layout Plain Layout
+office: KinectLogs/2014-09-30.10 (others: 26.13/14/17/18, 30.06...13 esp 11)
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+"Quaternions came from Hamilton after his really good work had been done;
+ and, though beautifully ingenious, have been an unmixed evil to those who
+ have touched them in any way, including Clerk Maxwell." — Lord Kelvin, 1892.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Triggs, B.2, Householder to find orthogonal spaces
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+http://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+from whitepaper.lyx (integration with inertial sensors)
+\end_layout
+
+\begin_layout Plain Layout
+The capabilities to generate 3D maps and localize hand-held devices or mobile
+ robots in indoor spaces have recently received even more attention with
+ applications ranging from architecture, real-estate, inspection, indoor
+ navigation aids to search-and-rescue.
+ Planar surfaces are dominant in most indoor environments, yet most current
+ mapping algorithms do not take advantage of this inherent structure.
+ Inertial sensors are now commonly found in hand-held devices and mobile
+ robots, yet most current mapping algorithms do not make use of this sensor
+ type.
+ We propose a system that combines inertial sensors with mapping and localizatio
+n using planar surfaces.
+\end_layout
+
+\begin_layout Plain Layout
+Contributions:
+\end_layout
+
+\begin_layout Plain Layout
+1) correct math for plane optimization
+\end_layout
+
+\begin_layout Plain Layout
+2) planar/inertial integration
+\end_layout
+
+\begin_layout Plain Layout
+3) lower computational cost than other solutions
+\end_layout
+
+\begin_layout Plain Layout
+--
+\end_layout
+
+\begin_layout Plain Layout
+dense models, extract planar surfaces to simplify: good quality models,
+ but computationally expensive, difficult to close loops (potentially deforming
+ planar surfaces)
+\end_layout
+
+\begin_layout Plain Layout
+mapping with planes has been done before, but only small maps, not using
+ correct math.
+ with incremental solver (iSAM) could achieve large maps
+\end_layout
+
+\begin_layout Plain Layout
+inertial is typically done with filters, but can be incorporated into smoothing,
+ see our prior work.
+ still not the best solution
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+The recent popularity of real-time 3D simultaneous localization and mapping
+ (SLAM) is explained by its wide range of possible applications including
+ mobile robot navigation, surveying and inspection, augmented and virtual
+ reality, search and rescue, and reconnaissance.
+ Laser-range finders are commonly used for 3D mapping, but the high cost
+ of a 3D laser or actuated 2D laser limit their wide-spread adoption.
+ With the recent availability of cheap camera-based RGB-D sensors, 3D mapping
+ capabilities are now becoming more widely accessible.
+ But many mapping systems place high demands on processing and hence also
+ power requirements, negating the advantages in both mobility and price
+ of mobile RGB-D sensors.
+\end_layout
+
+\begin_layout Standard
+When assuming the presence of structure in the surroundings, cheaper solutions
+ are possible by making use of higher level features, such as planes, rather
+ than points or dense volumetric representations.
+ While there has been prior work on using planar features for mapping, discussed
+ in more detail below, a least-squares estimation with planar features faces
+ some challenges that have so far not been addressed in the SLAM literature.
+\end_layout
+
+\begin_layout Standard
+A specific challenge for nonlinear least-squares estimation is presented
+ by the overparametrized representation of an infinite plane.
+ While a Gauss-Newton solver is preferable to other iterative least-squares
+ solvers because of its fast convergence, the overparametrization leads
+ to a rank-deficient information matrix, causing matrix inversion to fail.
+ Commonly used in practice, the Levenberg-Marquardt algorithm adds a regularizat
+ion term, but is not suitable for incremental inference 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Rosen12icra,Rosen14tro"
+
+\end_inset
+
+.
+ Alternatively, a Lagrangian multiplier can eliminate the extra degree of
+ freedom, but at the cost of additional computation and a 67% larger state
+ space compared to the minimal representation.
+ And finally, a commonly used minimal representation using spherical coordinates
+ for the plane normal suffers from singularities not unlike the well-known
+ gimbal lock for Euler angles.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/stairs_raw.png
+	lyxscale 10
+	width 66col%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/stairs_segmented.png
+	lyxscale 10
+	width 33col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/stairs-2014-09-25.03.sidebyside.png
+	lyxscale 10
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/stairs-2014-09-25.03.zoom.jpg
+	lyxscale 10
+	width 50col%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/stairs-2014-09-25.03.side.png
+	lyxscale 10
+	width 50col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:stairs"
+
+\end_inset
+
+The stairs sequence.
+ (top) Single frame, from left to right: raw image, depth image and planar
+ segmentation.
+ (center) 3D model, showing unique planes on the left and the colored point
+ cloud on the right.
+ (bottom) Enlarged view and side view of the 3D model.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{-6mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this paper we introduce a minimal representation that avoids all of these
+ problems and has so far not been described in the context of SLAM with
+ planar features.
+ We will relate the overparametrization of an infinite plane to that of
+ a rotation represented by a quaternion and provide a solution that is also
+ related to our earlier work on a minimal representation for homogeneous
+ point parametrizations 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "McDonald13ras"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+noindent 
+\end_layout
+
+\end_inset
+
+Our contributions in this paper are three-fold:
+\end_layout
+
+\begin_layout Enumerate
+We introduce a minimal representation for the homogeneous parametrization
+ of infinite planes suitable for least-squares estimation with Gauss-Newton
+ methods and related incremental solvers.
+\end_layout
+
+\begin_layout Enumerate
+We present a relative plane formulation that improves convergence.
+\end_layout
+
+\begin_layout Enumerate
+We show experimental results for mapping with planes using a hand-held RGB-D
+ sensor (see Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:stairs"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+In the following section we discuss related work.
+ In section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:main"
+
+\end_inset
+
+ we describe our approach to mapping with infinite planes, with a focus
+ on the minimal representation for least-squares optimization.
+ In section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:evaluation"
+
+\end_inset
+
+ we provide an evaluation using simulated data, followed in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:experimental"
+
+\end_inset
+
+ by experimental results from a real-time system using a hand-held RGB-D
+ sensor.
+ We summarize and offer concluding remarks in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:conclusion"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\Factors}{\mathcal{F}}
+{\mathcal{F}}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\Edges}{\mathcal{E}}
+{\mathcal{E}}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FormulaMacro
+\newcommand{\argmin}{\operatornamewithlimits{arg\, min}}
+{\arg\min}
+\end_inset
+
+
+\begin_inset FormulaMacro
+\newcommand{\argmax}{\operatornamewithlimits{arg\, max}}
+{\arg\max}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:related"
+
+\end_inset
+
+Related Work
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Traditionally 3D point clouds are aligned using the iterative closest point
+ (ICP) algorithm (e.g.
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Nuchter07jfr"
+
+\end_inset
+
+), allowing registration of arbitrary scenes even in the absence of any
+ planar surfaces
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+, but known to be susceptible to registration failures due to local minima
+\end_layout
+
+\end_inset
+
+.
+ We take a different approach, representing the scene as a set of planar
+ surfaces that are used as features in a nonlinear optimization similar
+ to standard bundle adjustment with point features.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We perform simultaneous localization and mapping (SLAM) by explicitly including
+ infinite planes into the estimation formulation.
+ One of the earliest works that makes planes explicit in the estimation
+ is presented by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Weingarten06iros"
+
+\end_inset
+
+.
+ They use 3D laser data and odometry derived from a 2D laser in combination
+ with an EKF formulation.
+ The EKF formulation is also used by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Servant08icpr"
+
+\end_inset
+
+, starting with partial knowledge and tracking a monocular camera, and by
+ 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Gee08tro"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "MartinezCarranza10bmvc"
+
+\end_inset
+
+ for monocular mapping.
+ The main problem of using an EKF formulation is the computational cost
+ caused by maintaining the dense covariance matrix, which limits application
+ to a small number of planes.
+ Instead, we apply a graph-based smoothing formulation that yields a sparse
+ estimation problem that can efficiently be solved.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Lee12iros"
+
+\end_inset
+
+ use a graph formulation in combination with a spherical parametrization
+ of the planes.
+ The spherical parametrization is commonly used 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Weingarten06iros,Servant08icpr"
+
+\end_inset
+
+ and is attractive because it is a minimal representation.
+ However, the spherical parametrization suffers from singularities that
+ are similar in nature to the well-known gimbal lock for Euler angles.
+\end_layout
+
+\begin_layout Standard
+Another common approach uses four parameters to represent a plane by its
+ normal and distance to the origin.
+ 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Trevor12icra"
+
+\end_inset
+
+ uses this overparametrized representation for a smoothing solution that
+ combines data from an RGB-D sensor and a 2D laser range finder.
+ The overparametrized formulation is also used by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Taguchi13icra"
+
+\end_inset
+
+ for real-time mapping with a hand-held RGB-D sensor, combining both mapping
+ of points and planes.
+ However, for an overparametrized system the information matrix is singular
+ and any attempt to invert it within Gauss-Newton will fail.
+ Hence Levenberg-Marquardt is typically used instead, which adds a regularizatio
+n term and thereby hides the overparametrization, negatively affecting convergen
+ce speed.
+ In contrast, in this paper we introduce a minimal representation for the
+ overparametrized homogeneous plane parametrization that is used during
+ optimization and is not affected by singularities.
+\end_layout
+
+\begin_layout Standard
+In recent work, 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "SalasMoreno14ismar"
+
+\end_inset
+
+ introduced a dense planar SLAM system that generates a surfel map, and
+ identifies and grows planar regions over time, with applications to augmented
+ reality.
+ Similar work by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Whelan15ras"
+
+\end_inset
+
+ incrementally performs planar simplification of a triangle mesh that is
+ built using a dense volumetric approach.
+ In contrast, we avoid dense mapping and explicitly represent and optimize
+ a graph of infinite planes.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Weingarten06iros"
+
+\end_inset
+
+ describe some of the earliest work on explicitly including parametrized
+ planes into the estimation.
+ An EKF formulation is chosen with the plane normal parametrized by spherical
+ coordinates.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Extraction of probabilistic plane measurements from 3D laser point clouds
+ is described, and plane segments are incrementally grown.
+\end_layout
+
+\end_inset
+
+A map for an office environment is presented based on 3D laser data and
+ odometry derived from a 2D laser.
+ The complexity of the algorithm due to the dense covariance matrix of the
+ EKF is identified as a computational bottle neck.
+ We avoid this complexity by applying a smoothing formulation that retains
+ all past poses, leading to a sparse estimation problem that can efficiently
+ be solved.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Servant08icpr"
+
+\end_inset
+
+ start with partial knowledge about the scene and refine that model while
+ tracking a monocular camera.
+ An ESM-based homography tracker combined with a robust estimator provides
+ the plane measurements.
+ Estimation is also formulated as an EKF, and the plane normal is parametrized
+ with spherical coordinates.
+ This parametrization is minimal, however suffers from singularities that
+ are similar in nature to the well-known gimbal lock for Euler angles.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Gee08tro"
+
+\end_inset
+
+ EKF
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset citation
+LatexCommand citet
+key "MartinezCarranza10bmvc"
+
+\end_inset
+
+ EKF
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Lee12iros"
+
+\end_inset
+
+ spherical
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Pathak10jfr"
+
+\end_inset
+
+ present pose registration by matching planar surface segments extracted
+ from 3D laser point clouds.
+ The derived pose-pose constraints are combined in a pose graph for optimization
+, but only the translational component of the poses is relaxed, while the
+ rotational component is assumed to be constant.
+ In contrast, we explicitly model plane features and also include the rotational
+ component of robot poses into the optimization, allowing for the use of
+ more noisy sensors such as RGB-D cameras.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Trevor12icra"
+
+\end_inset
+
+ present a smoothing solution that optimizes over all robot poses and plane
+ features.
+ Data from an RGB-D sensor and a 2D laser range finder are combined.
+ Convex hulls of observed planes are extended as needed during mapping.
+ An overparametrized plane representation is used in the optimization that
+ we are avoiding here to allow for the use of incremental solvers.
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+ (presumably by using the Levenberg-Marquardt algorithm for batch optimization).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Taguchi13icra"
+
+\end_inset
+
+ presented a real-time solution to mapping with a hand-held RGB-D sensor,
+ combining mapping of points and planes.
+ An overparametrized plane representation is used, and plane constraints
+ are implicitly obtained by randomly sampling points belonging to the measured
+ planes.
+ Batch Gauss-Newton optimization is implemented using a sparse linear solver
+ from the Eigen library, however, no details are given for how to deal with
+ the singular information matrix resulting from overparametrization.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+However, for an overparametrized system the information matrix is singular
+ and any attempt to factorize it within Gauss-Newton 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+they might have used CG, even though they say GN
+\end_layout
+
+\end_inset
+
+will fail, unless regularizers are added, which is not explained in the
+ paper.
+ In contrast we use a minimal parametrization that avoids the need for regulariz
+ers, reduces the state space and even allows incremental Gauss-Newton solvers
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Kaess08tro"
+
+\end_inset
+
+ to be deployed.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:main"
+
+\end_inset
+
+Mapping with Infinite Planes
+\end_layout
+
+\begin_layout Standard
+We start by introducing the state and plane representation as well as basic
+ operations related to those states.
+ For overparametrized quantities we then discuss minimal representations.
+ Finally, we discuss the formulation of plane SLAM as a least-squares problem
+ with a suitable plane observation model.
+\end_layout
+
+\begin_layout Subsection
+State and Plane Representation
+\end_layout
+
+\begin_layout Standard
+We represent the location and attitude of the sensor, or short its 
+\emph on
+pose
+\emph default
+, with respect to some global coordinate frame 
+\begin_inset Formula $g$
+\end_inset
+
+ by the tuple
+\begin_inset Formula 
+\begin{equation}
+x=\left(\mathbf{t},\mathbf{q}\right)\in\mathbb{R}^{3}\times S^{3},\label{eq:pose}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $\mathbf{t}$
+\end_inset
+
+ is the translation and 
+\begin_inset Formula $\mathbf{q}$
+\end_inset
+
+ is the spatial orientation of the sensor represented by a unit quaternion.
+ A unit quaternion
+\begin_inset Formula 
+\begin{equation}
+\mathbf{q}=\left(\begin{array}{c}
+q_{1}\\
+q_{2}\\
+q_{3}\\
+q_{4}
+\end{array}\right)=\left(\begin{array}{c}
+\mathbf{v}\sin(\frac{\theta}{2})\\
+\cos(\frac{\theta}{2})
+\end{array}\right)=\left(\begin{array}{c}
+\mathbf{q}_{v}\\
+q_{w}
+\end{array}\right)\in S^{3},\;\;\left\Vert \mathbf{q}\right\Vert =1
+\end{equation}
+
+\end_inset
+
+represents a rotation around the vector 
+\begin_inset Formula $\mathbf{\mathbf{v}}$
+\end_inset
+
+ through angle 
+\begin_inset Formula $\theta$
+\end_inset
+
+.
+ Whenever needed, we convert pose 
+\begin_inset Formula $x$
+\end_inset
+
+ into the Euclidean transformation matrix
+\begin_inset Formula 
+\begin{equation}
+\mathrm{T}_{gx}=\left(\begin{array}{cc}
+\mathrm{R}(\mathbf{q}) & \mathbf{t}\\
+\mathbf{0}^{\top} & 1
+\end{array}\right)\in\mathbb{R}^{4\times4},\label{eq:transform}
+\end{equation}
+
+\end_inset
+
+where for quaternion 
+\begin_inset Formula $\mathbf{q}$
+\end_inset
+
+ the expression 
+\begin_inset Formula $\mathrm{R}(\mathbf{q})\in SO(3)$
+\end_inset
+
+ is the rotation matrix
+\size footnotesize
+
+\begin_inset Formula 
+\begin{align}
+ & \mathrm{R}(\mathbf{q})=\nonumber \\
+ & \left[\begin{array}{ccc}
+-q_{1}^{2}+q_{2}^{2}+q_{3}^{2}-q_{4}^{2} & 2(q_{3}q_{4}-q_{1}q_{2}) & 2(q_{2}q_{4}+q_{1}q_{3})\\
+2(q_{1}q_{2}+q_{3}q_{4}) & -q_{1}^{2}+q_{2}^{2}-q_{3}^{2}+q_{4}^{2} & 2(q_{1}q_{4}-q_{2}q_{3})\\
+2(q_{1}q_{3}-q_{2}q_{4}) & 2(q_{2}q_{3}+q_{1}q_{4}) & q_{1}^{2}+q_{2}^{2}-q_{3}^{2}-q_{4}^{2}
+\end{array}\right]\label{eq:quat2rot}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A point in projective space is represented by homogeneous coordinates 
+\begin_inset Formula $\mathbf{p}=(p_{1},p_{2},p_{3},p_{4})^{\top}\in\mathbb{P}^{3}$
+\end_inset
+
+, where the corresponding Euclidean point for 
+\begin_inset Formula $p_{4}\neq0$
+\end_inset
+
+ is 
+\begin_inset Formula $(p_{1}/p_{4},p_{2}/p_{4},p_{3}/p_{4})^{\top}\in\mathbb{R}^{3}$
+\end_inset
+
+.
+ A point 
+\begin_inset Formula $\mathbf{p}_{x}$
+\end_inset
+
+ in the local sensor frame is moved into the global frame by left multiplication
+ with the Euclidean transformation matrix
+\begin_inset Formula 
+\begin{equation}
+\mathbf{p}_{g}=\mathrm{T}_{gx}\mathbf{p}_{x}.\label{eq:point_transform}
+\end{equation}
+
+\end_inset
+
+Conversely, a global point is moved into the local frame 
+\begin_inset Formula $\mathbf{p}_{x}=\mathrm{T}_{gx}^{-1}\mathbf{p}_{g}$
+\end_inset
+
+ using the inverse transformation.
+\end_layout
+
+\begin_layout Standard
+We represent a plane as a homogeneous vector 
+\begin_inset Formula $\boldsymbol{\pi}=(\pi_{1},\pi_{2},\pi_{3},\pi_{4})^{\top}\in\mathbb{P}^{3}$
+\end_inset
+
+ in projective space.
+ (
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Hartley03book"
+
+\end_inset
+
+ provide an excellent introduction to projective geometry and the homogeneous
+ representation of planes used in this work.) A point 
+\begin_inset Formula $\mathbf{p}=(p_{1},p_{2},p_{3},p_{4})^{\top}\in\mathbb{P}^{3}$
+\end_inset
+
+ lies on the plane iff
+\begin_inset Formula 
+\begin{equation}
+\pi_{1}p_{1}+\pi_{2}p_{2}+\pi_{3}p_{3}+\pi_{4}p_{4}=0,\label{eq:plane}
+\end{equation}
+
+\end_inset
+
+or short 
+\begin_inset Formula $\boldsymbol{\pi}^{\top}\mathbf{p}=0$
+\end_inset
+
+.
+ Mapping into 
+\begin_inset Formula $\mathbb{R}^{3}$
+\end_inset
+
+ for 
+\begin_inset Formula $p_{4}\neq0$
+\end_inset
+
+ yields the more familiar plane equation
+\begin_inset Formula 
+\begin{equation}
+\mathbf{n}^{\top}\mathbf{p}^{xyz}=d,
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $\mathbf{p}^{xyz}=(p^{x},p^{y},p^{z})^{\top}=(p_{1}/p_{4},p_{2}/p_{4},p_{3}/p_{4})^{\top}$
+\end_inset
+
+,
+\begin_inset Formula 
+\begin{equation}
+\mathbf{n}=\frac{(\pi_{1},\pi_{2},\pi_{3})^{\top}}{\sqrt{\pi_{1}^{2}+\pi_{2}^{2}+\pi_{3}^{2}}}\label{eq:normal}
+\end{equation}
+
+\end_inset
+
+the normal vector of the plane, and
+\begin_inset Formula 
+\begin{equation}
+d=\frac{-\pi_{4}}{\sqrt{\pi_{1}^{2}+\pi_{2}^{2}+\pi_{3}^{2}}}\label{eq:distance}
+\end{equation}
+
+\end_inset
+
+its distance from the origin.
+ The homogeneous plane representation is transformed from local to global
+ frame according to the 
+\emph on
+inverse
+\emph default
+ 
+\emph on
+transpose
+\emph default
+ of the corresponding point transform
+\begin_inset Formula 
+\begin{equation}
+\boldsymbol{\pi}_{g}=\mathrm{T}_{gx}^{-\top}\boldsymbol{\pi}_{x}.\label{eq:plane_transform}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Minimal Representation
+\end_layout
+
+\begin_layout Standard
+The homogeneous plane representation is over-parametrized and therefore
+ requires some special care during optimization—we will apply a similar
+ solution as is commonly used for quaternions, and therefore start with
+ a review of the quaternion case.
+\end_layout
+
+\begin_layout Standard
+The unit sphere 
+\begin_inset Formula $S^{3}=\{\mathbf{q}\in\mathbb{R}^{4}:\left\Vert \mathbf{q}\right\Vert =1\}$
+\end_inset
+
+ can be identified with the set of unit quaternions, which form a 3-dimensional
+ Lie group under quaternion multiplication (Hamilton product)
+\begin_inset Formula 
+\begin{equation}
+\mathbf{q}\mathbf{q}'=\left[\begin{array}{c}
+q_{1}q_{4}'+q_{2}q_{3}'-q_{3}q_{2}'+q_{4}q_{1}'\\
+-q_{1}q_{3}'+q_{2}q_{4}'+q_{3}q_{1}'+q_{4}q_{2}'\\
+q_{1}q_{2}'-q_{2}q_{1}'+q_{3}q_{4}'+q_{4}q_{3}'\\
+-q_{1}q_{1}'-q_{2}q_{2}'-q_{3}q_{3}'+q_{4}q_{4}'
+\end{array}\right].\label{eq:Hamilton}
+\end{equation}
+
+\end_inset
+
+They are related to the set of 3D rotation matrices 
+\begin_inset Formula $SO(3)$
+\end_inset
+
+ as follows: There is a two-to-one covering map from 
+\begin_inset Formula $S^{3}$
+\end_inset
+
+ onto 
+\begin_inset Formula $SO(3)$
+\end_inset
+
+: antipodal points in 
+\begin_inset Formula $S^{3}$
+\end_inset
+
+ are identified because 
+\begin_inset Formula $-\mathbf{q}$
+\end_inset
+
+ represents the same rotation as 
+\begin_inset Formula $\mathbf{q}$
+\end_inset
+
+.
+ The matrix Lie algebra of 
+\begin_inset Formula $SO(3)$
+\end_inset
+
+ is 
+\begin_inset Formula $\mathfrak{so}(3)$
+\end_inset
+
+, the set of skew-symmetric matrices
+\begin_inset Formula 
+\begin{equation}
+\left[\boldsymbol{\omega}\right]_{\times}=\left(\begin{array}{ccc}
+0 & -\omega_{3} & \omega_{2}\\
+\omega_{3} & 0 & -\omega_{1}\\
+-\omega_{2} & \omega_{1} & 0
+\end{array}\right)\label{eq:skew}
+\end{equation}
+
+\end_inset
+
+for an incremental rotation 
+\begin_inset Formula $\boldsymbol{\omega}=(\omega_{1},\omega_{2},\omega_{3})^{\top}$
+\end_inset
+
+, see 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Hall00book"
+
+\end_inset
+
+.
+ This Lie algebra forms a tangent space 
+\begin_inset Formula $\mathbb{R}^{3}$
+\end_inset
+
+ of 
+\begin_inset Formula $SO(3)$
+\end_inset
+
+ at the identity.
+ Because the elements have three parameters, they provide a minimal local
+ representation of rotations.
+ The 
+\emph on
+exponential map
+\emph default
+
+\begin_inset Formula 
+\begin{equation}
+\exp(\left[\boldsymbol{\omega}\right]_{\times})=\mathrm{I}+\sin\left\Vert \boldsymbol{\omega}\right\Vert \left[\hat{\boldsymbol{\omega}}\right]_{\times}+(1-\cos\left\Vert \boldsymbol{\omega}\right\Vert )\left(\hat{\boldsymbol{\omega}}\hat{\boldsymbol{\omega}}^{\top}-\mathrm{I}\right)\label{eq:exmapR}
+\end{equation}
+
+\end_inset
+
+is also known as Rodrigues' formula, where 
+\begin_inset Formula $\hat{\boldsymbol{\omega}}=\boldsymbol{\omega}/\left\Vert \boldsymbol{\omega}\right\Vert $
+\end_inset
+
+ and 
+\begin_inset Formula $\left\Vert \boldsymbol{\omega}\right\Vert $
+\end_inset
+
+ are the axis and angle of rotation, respectively.
+ The exponential map allows updating an existing rotation 
+\begin_inset Formula $\mathrm{R}$
+\end_inset
+
+ by an increment 
+\begin_inset Formula $\boldsymbol{\omega}$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\mathrm{R}'=\exp(\left[\boldsymbol{\omega}\right]_{\times})\mathrm{R}.\label{eq:updateR}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Similarly, the elements of the Lie algebra 
+\begin_inset Formula $\mathfrak{su}(2)$
+\end_inset
+
+ of 
+\begin_inset Formula $S^{3}$
+\end_inset
+
+ can be identified with the tangent space 
+\begin_inset Formula $\mathbb{R}^{3}$
+\end_inset
+
+ of 
+\begin_inset Formula $S^{3}$
+\end_inset
+
+ at the identity.
+ We use the mapping of 
+\begin_inset Formula $\mathbb{R}^{3}$
+\end_inset
+
+ to 
+\begin_inset Formula $S^{3}$
+\end_inset
+
+ from 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Grassia98jgt"
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\exp\left(\boldsymbol{\omega}\right)=\left(\begin{array}{c}
+\frac{1}{2}sinc\left(\frac{1}{2}\left\Vert \boldsymbol{\omega}\right\Vert \right)\boldsymbol{\omega}\\
+\cos\left(\frac{1}{2}\left\Vert \boldsymbol{\omega}\right\Vert \right)
+\end{array}\right)\label{eq:exmap}
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+todo: the actual expmap does not have factor 1/2...
+\end_layout
+
+\end_inset
+
+that coincides with the axis/angle representation above.
+ Here, 
+\begin_inset Formula $sinc$
+\end_inset
+
+ is the cardinal sine function.
+ Note that 
+\begin_inset Formula $\exp((0,0,0)^{\top})=(0,0,0,1)^{\top}$
+\end_inset
+
+ is the identity of 
+\begin_inset Formula $S^{3}$
+\end_inset
+
+ as expected.
+ As for every minimal representation of rotations there are singularities,
+ here at multiples of 
+\begin_inset Formula $2\pi$
+\end_inset
+
+, but, unlike for Euler angles, they can be avoided by forcing 
+\begin_inset Formula $\boldsymbol{\omega}$
+\end_inset
+
+ to fall into the range 
+\begin_inset Formula $(-\pi,\pi]$
+\end_inset
+
+, while still allowing for all possible rotations.
+ An existing quaternion 
+\begin_inset Formula $\mathbf{q}$
+\end_inset
+
+ is updated by an increment 
+\begin_inset Formula $\boldsymbol{\omega}$
+\end_inset
+
+ using quaternion multiplication
+\begin_inset Formula 
+\begin{equation}
+\mathbf{q}'=\exp\left(\boldsymbol{\omega}\right)\mathbf{q}.
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now we are ready to take on the overparametrization in the plane representation.
+ Note that both homogeneous and non-homogeneous (normal and distance) representa
+tions are overparametrized, because there are only three degrees of freedom
+ in a plane: its orientation, which can be specified by two angles 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ and 
+\begin_inset Formula $\beta$
+\end_inset
+
+, and its orthogonal distance 
+\begin_inset Formula $d$
+\end_inset
+
+ from the origin.
+ But why not just use these three parameters 
+\begin_inset Formula $(\alpha,\beta,d)$
+\end_inset
+
+ as a minimal representation? They are indeed sufficient to specify any
+ plane, but there are singularities, not unlike those for Euler angles,
+ that cause problems when encountered during optimization.
+ And why is the overparametrization problematic? The information matrix
+ becomes rank-deficient and cannot be inverted as needed for Gauss-Newton
+ type optimization.
+ One solution is regularization, as provided by the Levenberg-Marquardt
+ algorithm.
+ However, slow convergence can be expected because there are directions
+ in which the cost function is flat so that an infinite number of solutions
+ exist, forcing the algorithm toward linear convergence speed of the gradient
+ descent method instead of the quadratic convergence of Gauss-Newton.
+ Furthermore, overparametrization does not allow the use of trust-region
+ methods such as Powell's Dog Leg or incremental inference with methods
+ such as incremental smoothing and mapping (iSAM) 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Kaess08tro,Rosen12icra"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+We can find a minimal representation by restricting the ambiguity in the
+ homogeneous representation.
+ The homogeneous plane representation is not unique: all 
+\begin_inset Formula $\lambda\boldsymbol{\pi}$
+\end_inset
+
+ represent the same plane for 
+\begin_inset Formula $\lambda\in\mathbb{R}\backslash0$
+\end_inset
+
+, which defines an equivalence class.
+ We identify unique representatives by normalizing the vector 
+\begin_inset Formula $\boldsymbol{\pi}$
+\end_inset
+
+ to lie on the unit sphere of 
+\begin_inset Formula $\mathbb{R}^{4}$
+\end_inset
+
+ as 
+\begin_inset Formula $\boldsymbol{\pi}'=\boldsymbol{\pi}/\left\Vert \boldsymbol{\pi}\right\Vert \in S^{3}$
+\end_inset
+
+.
+ The vector 
+\begin_inset Formula $(0,0,0,1)^{\top}$
+\end_inset
+
+ represents the north pole of the unit sphere (think of a sphere in 
+\begin_inset Formula $\mathbb{R}^{3}$
+\end_inset
+
+) and corresponds to the plane at infinity 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Hartley03book"
+
+\end_inset
+
+.
+ The vector 
+\begin_inset Formula $(1,0,0,0)^{\top}$
+\end_inset
+
+ is a point on the equator that represents a plane through the origin.
+ In fact, 
+\begin_inset Formula $(\pi'_{1},\pi'_{2},\pi'_{3},0)^{\top}$
+\end_inset
+
+ contains all the planes through the origin, where 
+\begin_inset Formula $(\pi'_{1},\pi'_{2},\pi'_{3})^{\top}$
+\end_inset
+
+ describes the normal vector.
+ Leaving the equator, for increasing 
+\begin_inset Formula $\pi'_{4}$
+\end_inset
+
+ we obtain planes that are further from the origin with distance given by
+ (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:distance"
+
+\end_inset
+
+).
+ Equivalently, negative 
+\begin_inset Formula $\pi'_{4}$
+\end_inset
+
+ lead to planes with the normal pointing away from the origin—remembering
+ that 
+\begin_inset Formula $S^{3}$
+\end_inset
+
+ is a double cover of 
+\begin_inset Formula $SO(3)$
+\end_inset
+
+, an equivalent plane is found by negating both the normal and the distance.
+ If we want a unique representation we can restrict 
+\begin_inset Formula $\boldsymbol{\pi}'$
+\end_inset
+
+ to lie on the upper hemisphere, i.e.
+ 
+\begin_inset Formula $\pi'_{4}\ge0$
+\end_inset
+
+.
+ Similarly, for the unit circle/sphere at 
+\begin_inset Formula $\pi'_{4}=0$
+\end_inset
+
+ opposite sites are also identified.
+\end_layout
+
+\begin_layout Standard
+How do we restrict the optimization to remain on the unit sphere? One option
+ is to add a Lagrangian multiplier to enforce unit norm, adding an additional
+ parameter to the optimization as well as a nontrivial cost term.
+ Instead of the minimum of three parameters, we now need five parameters
+ for each plane, considerably increasing the size of the state space, while
+ also adding to the computational cost with the additional constraint.
+ A better solution is to use a minimal representation to update a plane
+ 
+\emph on
+during
+\emph default
+ optimization.
+ Recalling the unit quaternion case discussed earlier for rotations, we
+ realize that both can be identified with 
+\begin_inset Formula $S^{3}$
+\end_inset
+
+.
+ We will simply treat the normalized homogeneous plane parametrization as
+ a quaternion, and use the exponential map to update planes during optimization.
+\end_layout
+
+\begin_layout Standard
+We will later also need the inverse of the exponential map, the so-called
+ 
+\emph on
+log map
+\emph default
+, that maps an element of 
+\begin_inset Formula $S^{3}$
+\end_inset
+
+ referenced to the identity 
+\begin_inset Formula $(0,0,0,1)^{\top}$
+\end_inset
+
+ into the tangent space 
+\begin_inset Formula $\mathbb{R}^{3}$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\boldsymbol{\omega}=\log(\mathbf{q})=\frac{2\cos^{-1}(q_{w})}{\left\Vert \mathbf{q}_{v}\right\Vert }\mathbf{q}_{v},\label{eq:logmap}
+\end{equation}
+
+\end_inset
+
+which is useful for measuring the distance 
+\begin_inset Formula $\log(\mathbf{q}(\boldsymbol{\pi})^{-1}\mathbf{q}(\boldsymbol{\pi}'))$
+\end_inset
+
+ between two planes 
+\begin_inset Formula $\boldsymbol{\pi}$
+\end_inset
+
+ and 
+\begin_inset Formula $\boldsymbol{\pi}'$
+\end_inset
+
+ in the tangent space.
+\end_layout
+
+\begin_layout Subsection
+SLAM Formulation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figures/sfm_graph.pdf
+	lyxscale 50
+	width 80col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Structure-from-motion (SFM)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{3mm}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figures/pose_graph.pdf
+	lyxscale 50
+	width 80col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Pose graph SLAM
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{3mm}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename figures/plane_sfm_graph.pdf
+	lyxscale 50
+	width 80col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:factorgraph_planar"
+
+\end_inset
+
+Planar SLAM
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:factorgraph"
+
+\end_inset
+
+Factor graph representation for three SLAM variants.
+ Variable nodes include poses 
+\begin_inset Formula $x$
+\end_inset
+
+, point features 
+\begin_inset Formula $l$
+\end_inset
+
+ and plane features 
+\begin_inset Formula $\pi$
+\end_inset
+
+.
+ Factor nodes relate to point measurements 
+\begin_inset Formula $m$
+\end_inset
+
+, plane measurements 
+\begin_inset Formula $c$
+\end_inset
+
+, odometry measurements 
+\begin_inset Formula $u$
+\end_inset
+
+, loop closures 
+\begin_inset Formula $o$
+\end_inset
+
+, and the prior 
+\begin_inset Formula $p$
+\end_inset
+
+ on the first pose.
+ While plane constraints between pairwise frames could be converted into
+ a pose graph formulation, for planar SLAM, we choose to explicitly model
+ the infinite planes, similar to the point features in structure from motion.
+ Additional sensor information such as odometry can be added similar to
+ the common pose graph formulation of SLAM.
+ Note that at least three general planes have to be observed per pose for
+ (c) to be fully constrained, and similarly the example in (a) is underconstrain
+ed as shown.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{-6mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We formulate the planar mapping problem as a least-squares optimization,
+ estimating the sensor poses 
+\begin_inset Formula $x_{0},\dots,x_{t}$
+\end_inset
+
+ and planes 
+\begin_inset Formula $\boldsymbol{\pi}_{1},\dots,\boldsymbol{\pi}_{m}$
+\end_inset
+
+ given the plane measurements.
+\end_layout
+
+\begin_layout Standard
+We use a 
+\emph on
+factor graph
+\emph default
+ to represent the estimation problem as a graphical model 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Kaess12ijrr"
+
+\end_inset
+
+.
+ Factor graphs of three SLAM variants are shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:factorgraph"
+
+\end_inset
+
+.
+ Planar SLAM is similar to structure from motion, but instead of point locations
+ we estimate the parameters of infinite planes.
+ And similar to the pose graph SLAM formulation, we may include any available
+ odometry constraints, e.g.
+\begin_inset space ~
+\end_inset
+
+from a robot platform or from inertial sensors.
+ It is also possible to convert the planar constraints between frames into
+ constraints within a pose graph formulation.
+ However, explicit modeling is preferable for planar mapping and is also
+ feasible in real-time because the number of planes visible per image is
+ typically small.
+\end_layout
+
+\begin_layout Standard
+Formally, a factor graph is a bipartite graph 
+\begin_inset Formula $G=(\Factors,\Theta,\Edges)$
+\end_inset
+
+ with two node types: 
+\emph on
+factor nodes
+\emph default
+ 
+\begin_inset Formula $f_{i}\in\Factors$
+\end_inset
+
+ that relate to our measurements and 
+\emph on
+variable nodes 
+\begin_inset Formula $\theta_{j}\in\Theta$
+\end_inset
+
+
+\emph default
+ that represent the poses and planes to be estimated.
+ An edge 
+\begin_inset Formula $e_{ij}\in\Edges$
+\end_inset
+
+ connects a factor node with a variable node.
+ A factor graph 
+\begin_inset Formula $G$
+\end_inset
+
+ defines the factorization
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+different from factorization/elimination!
+\end_layout
+
+\end_inset
+
+ of a function
+\begin_inset Formula 
+\begin{equation}
+f(\Theta)=\prod_{i}f_{i}(\Theta_{i}),\label{eq:factorization}
+\end{equation}
+
+\end_inset
+
+where dependence relationships are encoded by the edges 
+\begin_inset Formula $e_{ij}$
+\end_inset
+
+: each factor 
+\begin_inset Formula $f_{i}$
+\end_inset
+
+ is a function of the variables in 
+\begin_inset Formula $\Theta_{i}$
+\end_inset
+
+.
+ Our goal is to find the variable assignment 
+\begin_inset Formula $\Theta^{*}$
+\end_inset
+
+ that maximizes the factorization (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:factorization"
+
+\end_inset
+
+)
+\begin_inset Formula 
+\begin{equation}
+\Theta^{*}=\argmax_{\Theta}\prod_{i}f_{i}(\Theta_{i}),\label{eq:objective}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $\Theta_{i}=\{\theta_{j}\}$
+\end_inset
+
+ is the set of variables 
+\begin_inset Formula $\theta_{j}$
+\end_inset
+
+ involved in the factor 
+\begin_inset Formula $f_{i}$
+\end_inset
+
+.
+ For Gaussian measurement models
+\begin_inset Formula 
+\begin{equation}
+f_{i}(\Theta_{i})\propto\exp\left(-\frac{1}{2}\left\Vert h_{i}(\Theta_{i})-z_{i}\right\Vert _{\Sigma_{i}}^{2}\right),\label{eq:Gaussian}
+\end{equation}
+
+\end_inset
+
+the factored objective function to maximize (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:objective"
+
+\end_inset
+
+) is equivalent to the nonlinear least-squares problem
+\begin_inset Formula 
+\begin{equation}
+\argmin_{\Theta}\left(-\log f(\Theta)\right)=\argmin_{\Theta}\frac{1}{2}\sum_{i}\left\Vert h_{i}(\Theta_{i})-z_{i}\right\Vert _{\Sigma_{i}}^{2},\label{eq:NLS}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $h_{i}(\Theta_{i})$
+\end_inset
+
+ is a measurement prediction function and 
+\begin_inset Formula $z_{i}$
+\end_inset
+
+ a measurement, and 
+\begin_inset Formula $\left\Vert \mathbf{y}\right\Vert _{\Sigma}^{2}:=\mathbf{y}^{T}\Sigma^{-1}\mathbf{y}$
+\end_inset
+
+ is the squared Mahalanobis distance with covariance matrix 
+\begin_inset Formula $\Sigma$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Plane Measurement Model
+\end_layout
+
+\begin_layout Standard
+A measurement of a plane is given by its normal and distance from the local
+ sensor frame, and an associated measurement uncertainty.
+ We model the uncertainty of the measurement of the plane 
+\begin_inset Formula $\boldsymbol{\pi}$
+\end_inset
+
+ from pose 
+\begin_inset Formula $x$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\boldsymbol{\pi}_{x}=\mathrm{T}_{gx}^{-\top}\boldsymbol{\pi}\oplus\boldsymbol{v},\quad\boldsymbol{v}\sim\mathcal{N}\left(0,\Sigma\right)
+\end{equation}
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+todo: exmap for noise...
+\end_layout
+
+\end_inset
+
+by zero-mean Gaussian noise 
+\begin_inset Formula $\boldsymbol{v}$
+\end_inset
+
+ with 
+\begin_inset Formula $3\times3$
+\end_inset
+
+ covariance 
+\begin_inset Formula $\Sigma$
+\end_inset
+
+.
+ Then, the probability of a plane estimate 
+\begin_inset Formula $\hat{\boldsymbol{\pi}}$
+\end_inset
+
+ and a pose estimate 
+\begin_inset Formula $\hat{x}$
+\end_inset
+
+ given an actual measurement 
+\begin_inset Formula $\tilde{\boldsymbol{\pi}}_{x}$
+\end_inset
+
+ is given by the normal distribution
+\begin_inset Formula 
+\begin{equation}
+p(\hat{x},\hat{\boldsymbol{\pi}}|\tilde{\boldsymbol{\pi}}_{x})=\frac{1}{\sqrt{\left(2\pi\right)^{3}\left|\Sigma\right|}}\exp\left(-\frac{1}{2}\left\Vert h(\mathrm{T}_{g\hat{x}},\hat{\boldsymbol{\pi}})\ominus\tilde{\boldsymbol{\pi}}_{x}\right\Vert _{\Sigma}^{2}\right).
+\end{equation}
+
+\end_inset
+
+The operator 
+\begin_inset Formula $\ominus$
+\end_inset
+
+ calculates the difference in the tangent space by applying the log map.
+ The corresponding cost function for the least-squares formulation is simply
+ the quadratic term from the exponent
+\begin_inset Formula 
+\begin{align}
+c_{x\pi}(\hat{x},\hat{\boldsymbol{\pi}}) & =\left\Vert h(\mathrm{T}_{g\hat{x}},\hat{\boldsymbol{\pi}})\ominus\tilde{\boldsymbol{\pi}}_{x}\right\Vert _{\Sigma}^{2}\nonumber \\
+ & =\left\Vert \log\left(q(\mathrm{T}_{g\hat{x}}^{-\top}\hat{\boldsymbol{\pi}})^{-1}q(\tilde{\boldsymbol{\pi}}_{x})\right)\right\Vert _{\Sigma}^{2}.\label{eq:planeCost}
+\end{align}
+
+\end_inset
+
+Taking the difference in tangent space, we treat planes as quaternions,
+ calculate the difference by quaternion multiplication with one side inverted,
+ and finally apply the log map.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/plane_sfm_graph_relative.pdf
+	lyxscale 50
+	width 80col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:relative"
+
+\end_inset
+
+Relative formulation for plane measurements, based on Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:factorgraph_planar"
+
+\end_inset
+
+.
+ Planes are expressed in the local coordinate frame of a base pose, for
+ example the first pose from which they have been observed.
+ Subsequent plane observations result in ternary factors that also connect
+ to the respective base pose (new connections shown in red).
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{-4mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Relative Formulation
+\end_layout
+
+\begin_layout Standard
+We propose a relative formulation for plane measurements.
+ Planes are expressed relative to the first pose that observed them, changing
+ the cost function (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:planeCost"
+
+\end_inset
+
+) to first express the observing pose in the frame of the base pose
+\begin_inset Formula 
+\begin{align}
+c_{x\pi x_{b}}(\hat{x},\hat{\boldsymbol{\pi}},\hat{x}_{b}) & =\left\Vert h(\mathrm{T}_{g\hat{x}_{b}}^{-1}\mathrm{T}_{g\hat{x}},\hat{\boldsymbol{\pi}})\ominus\tilde{\boldsymbol{\pi}}_{x}\right\Vert _{\Sigma}^{2}
+\end{align}
+
+\end_inset
+
+In the factor graph, this results in ternary factors that additionally connect
+ to the base pose, see Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:relative"
+
+\end_inset
+
+.
+ Similar to our relative formulation for homogeneous point features in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "McDonald13ras"
+
+\end_inset
+
+, this allows for faster convergence.
+ Intuitively, when mapping a large building, loop closures might cause a
+ complete room to move, but the relative configuration of planes and poses
+ inside the room will likely not be affected.
+ Keeping planes anchored relative to poses automatically moves the planes
+ along with any global changes that affect the poses.
+\end_layout
+
+\begin_layout Standard
+Extraction of plane measurements from point data is described by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Weingarten06iros"
+
+\end_inset
+
+.
+ 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Forstner10accv"
+
+\end_inset
+
+ provides a theoretical account for how the probabilistic uncertainty of
+ homogeneous entities (including planes) is correctly dealt with in the
+ context of least squares estimation.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+todo: provide details for how to derive plane measurements including uncertainty
+ from RGB-D frames
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+In practice, a plane measurement may for example be derived from a set of
+ sampled points of the plane.
+ finding normal via eigenvector, uncertainty?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+We can also derive constraints between planes without explicitly involving
+ a sensor pose.
+ Any observation of two planes 
+\begin_inset Formula $\pi$
+\end_inset
+
+ and 
+\begin_inset Formula $\pi'$
+\end_inset
+
+ from a single sensor measurement gives rise to a plane-plane constraint
+\begin_inset Formula 
+\begin{align}
+c_{\pi\pi'}(\boldsymbol{\pi},\boldsymbol{\pi}') & =\left\Vert g(\pi,\pi')\ominus\tilde{\Delta\pi}_{x}\right\Vert _{\Xi}^{2}\nonumber \\
+ & =\left\Vert \log\left(\left(q(\pi)^{-1}\star q(\pi)\right)^{-1}q(\tilde{\Delta\pi}_{x})\right)\right\Vert _{\Xi}^{2}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+problem: quaternion is not unique, i.e.
+ distance can be 2pi - map to log space, truncate, exmap back?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+alternative: apply noise in geometric space, but that contradicts Foerstner...,
+ can still be minimal and avoid singularities
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+how to convert covariance into tangent space
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Solution
+\end_layout
+
+\begin_layout Standard
+Solving the nonlinear least-squares problem typically involves repeated
+ linearization.
+ For nonlinear measurement functions 
+\begin_inset Formula $h_{i}$
+\end_inset
+
+ in (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Gaussian"
+
+\end_inset
+
+), nonlinear optimization methods such as Gauss-Newton iterations or the
+ Levenberg-Marquardt algorithm solve a succession of linear approximations
+ to (
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:NLS"
+
+\end_inset
+
+) in order to approach the minimum.
+ At each iteration of the nonlinear solver, we linearize around the current
+ estimate 
+\begin_inset Formula $\Theta$
+\end_inset
+
+ to get a new, 
+\emph on
+linear
+\emph default
+ least-squares problem in 
+\begin_inset Formula $\boldsymbol{\Delta}$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+\argmin_{\boldsymbol{\Delta}}\left(-\log f(\boldsymbol{\Delta})\right)=\argmin_{\boldsymbol{\Delta}}\left\Vert A\boldsymbol{\Delta}-\mathbf{b}\right\Vert ^{2},\label{eq:linear}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $A\in\mathbb{R}^{m\times n}$
+\end_inset
+
+ is the measurement Jacobian consisting of 
+\begin_inset Formula $m$
+\end_inset
+
+ measurement rows, and 
+\begin_inset Formula $\boldsymbol{\Delta}$
+\end_inset
+
+ is an 
+\begin_inset Formula $n$
+\end_inset
+
+-dimensional vector.
+ Note that the covariances 
+\begin_inset Formula $\Sigma_{i}$
+\end_inset
+
+ have been absorbed into the corresponding block rows of 
+\begin_inset Formula $A$
+\end_inset
+
+, making use of
+\begin_inset Formula 
+\begin{equation}
+\left\Vert \boldsymbol{\Delta}\right\Vert _{\Sigma}^{2}=\mathbf{\boldsymbol{\Delta}}^{T}\Sigma^{-1}\boldsymbol{\Delta}=\boldsymbol{\Delta}^{T}\Sigma^{-\frac{T}{2}}\Sigma^{-\frac{1}{2}}\boldsymbol{\Delta}=\left\Vert \Sigma^{-\frac{1}{2}}\boldsymbol{\Delta}\right\Vert ^{2}.\label{eq:absorb}
+\end{equation}
+
+\end_inset
+
+Once 
+\begin_inset Formula $\boldsymbol{\Delta}$
+\end_inset
+
+ is found, the new estimate is given by 
+\begin_inset Formula $\Theta\oplus\boldsymbol{\Delta}$
+\end_inset
+
+, which is then used as linearization point in the next iteration of the
+ nonlinear optimization.
+ The operator 
+\begin_inset Formula $\oplus$
+\end_inset
+
+ is often simple addition, but for overparametrized representations such
+ as quaternions for 3D orientations or our homogeneous plane representations,
+ an exponential map is used instead.
+\end_layout
+
+\begin_layout Standard
+The minimum of the linear system 
+\begin_inset Formula $A\boldsymbol{\Delta}-\mathbf{b}$
+\end_inset
+
+ is obtained by Cholesky or QR matrix factorization.
+ By setting the derivative in 
+\begin_inset Formula $\boldsymbol{\Delta}$
+\end_inset
+
+ to zero we obtain the normal equations 
+\begin_inset Formula $A^{T}A\boldsymbol{\Delta}=A^{T}\mathbf{b}$
+\end_inset
+
+.
+ Cholesky factorization yields 
+\begin_inset Formula $A^{T}A=R^{T}R$
+\end_inset
+
+, and a forward and backsubstitution on 
+\begin_inset Formula $R^{T}\mathbf{y}=A^{T}\mathbf{b}$
+\end_inset
+
+ and 
+\begin_inset Formula $R\boldsymbol{\Delta}=\mathbf{y}$
+\end_inset
+
+ first recovers 
+\begin_inset Formula $\mathbf{y}$
+\end_inset
+
+, then the actual solution, the update 
+\begin_inset Formula $\boldsymbol{\Delta}$
+\end_inset
+
+.
+ Alternatively we can skip the normal equations and apply QR factorization
+ directly to 
+\begin_inset Formula $A$
+\end_inset
+
+, yielding 
+\begin_inset Formula $R\boldsymbol{\Delta}=\mathbf{d}$
+\end_inset
+
+, which is solved by backsubstitution.
+ Note that 
+\begin_inset Formula $Q$
+\end_inset
+
+ is not explicitly formed; instead 
+\begin_inset Formula $\mathbf{b}$
+\end_inset
+
+ is modified during factorization to obtain 
+\begin_inset Formula $\mathbf{d}$
+\end_inset
+
+, see 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Kaess08tro"
+
+\end_inset
+
+ for details.
+\end_layout
+
+\begin_layout Standard
+When considering a sequence of measurements, as is typical for SLAM, it
+ is possible to obtain a more efficient solution by updating the previous
+ solution with the new measurements.
+ iSAM 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Kaess08tro"
+
+\end_inset
+
+ appends the new linearized measurement rows to the previous factorization
+ 
+\begin_inset Formula $R$
+\end_inset
+
+ and applies Givens rotations to again form an upper triangular matrix.
+ A fully nonlinear incremental algorithm is also possible by exploiting
+ the connection between sparse linear algebra and probabilistic graphical
+ models, see iSAM2 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Kaess12ijrr"
+
+\end_inset
+
+ for details.
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:evaluation"
+
+\end_inset
+
+Evaluation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:eval"
+
+\end_inset
+
+Batch optimization, comparing relative and absolute formulation as well
+ as overparametrization and our minimal representation for a simulated sequence
+ (76 poses, 31 planes, 450 plane measurements).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="6" columns="4">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Gauss-
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Levenberg-
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Powell's
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Newton
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Marquardt
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Dog-Leg
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Overpar., absolute
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+not possible
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+76 it (
+\begin_inset Formula $475ms$
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+not possible
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Overpar., relative
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+not possible
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+15 it (
+\begin_inset Formula $208ms$
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+not possible
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Minimal, absolute
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+diverged
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+58 it (
+\begin_inset Formula $340ms$
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+17 it (
+\begin_inset Formula $126ms$
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Minimal, relative
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+5 it 
+\series default
+(
+\begin_inset Formula $105ms$
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+5 it 
+\series default
+(
+\begin_inset Formula $106ms$
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+7 it 
+\series default
+(
+\begin_inset Formula $129ms$
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{-4mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+First we show the advantages of our minimal representation as well as the
+ relative plane formulation.
+ We use a simulated dataset of 76 poses distributed in 
+\begin_inset Formula $1m$
+\end_inset
+
+ steps along a straight line with 31 random planes yielding 450 plane measuremen
+ts based on a maximum sensor range of 
+\begin_inset Formula $5m$
+\end_inset
+
+.
+ We simulate the measurements from the ground truth and add Gaussian noise
+ with standard deviations of 
+\begin_inset Formula $0.1m$
+\end_inset
+
+ in translation, 
+\begin_inset Formula $0.01rad$
+\end_inset
+
+ in orientation and 
+\begin_inset Formula $0.005$
+\end_inset
+
+ on the plane measurements.
+ In Table
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:eval"
+
+\end_inset
+
+ we compare batch optimization using Gauss-Newton (GN), Levenberg-Marquardt
+ (LM) and Powell's Dog-Leg (PDL).
+ Neither GN nor PDL can handle overparametrization, because the information
+ matrix is rank deficient and cannot be inverted.
+ Intuitively, the cost function locally is not bowl shaped with a single
+ minimum, but resembles a valley of infinitely many minima.
+ While LM does find the correct solution, its regularization masks the underlyin
+g problem at the cost of convergence speed.
+ In contrast, the minimal representation also allows use of GN and PDL.
+ Generally, PDL has a slightly higher cost, but is more stable, as can be
+ seen by comparing with the second to last row, where GN diverges.
+ In summary, our minimal representation combined with the relative formulation
+ outperforms the alternatives.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename stats/timing.pdf
+	width 80col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:timing"
+
+\end_inset
+
+Cumulative computation time for GN compared to incremental solution by iSAM,
+ using our minimal representation and relative formulation for a simulated
+ sequence (343 poses, 28 planes, 2736 plane measurements).
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{-4mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Second, we demonstrate the performance advantage of incremental optimization
+ enabled by our minimal representation.
+ In SLAM, measurements arrive sequentially, and at every time step a solution
+ is calculated.
+ Exploiting this sequential nature, an incremental solver such as iSAM 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Kaess08tro"
+
+\end_inset
+
+ reuses previous calculations to significantly lower computational cost
+ compared to performing a batch solution at every step.
+ Using the same sensor range and artificial noise as in the previous experiment,
+ we have simulated a longer random robot trajectory through a Manhattan
+ world with random planes.
+ Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:timing"
+
+\end_inset
+
+ compares per step cumulative timing for batch Gauss-Newton and the incremental
+ solver iSAM.
+ The results indicate that incremental optimization is possible with our
+ minimal representation, which is not true in the overparametrized case.
+ The plot further confirms that incremental optimization significantly reduces
+ computational cost, which is consistent with our prior results 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Kaess08tro"
+
+\end_inset
+
+ for landmark-based and pose graph SLAM.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+show that more efficient in batch + can use PDL (longer sequences typically
+ get stuck in local minima), Gauss-Newton without line search can overshoot,
+ typically more advanced algorithms such as LM and dogleg.
+ LM masks the problem, doesn't provide quadratic convergence
+\end_layout
+
+\begin_layout Plain Layout
+show that incremental possible and faster than batch in each step, using
+ Manhattan world
+\end_layout
+
+\begin_layout Plain Layout
+relative vs global?
+\end_layout
+
+\begin_layout Plain Layout
+use Manhattan world to compare different parametrizations: minimal/quat,
+ minimal/quat_h, minimal/2h+d, minimal/2angle, homogeneous/LM, nonhomogeneous/LM
+\end_layout
+
+\begin_layout Plain Layout
+incremental (advantage with local minima?)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:experimental"
+
+\end_inset
+
+Experimental Results
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/segmentation_raw.png
+	lyxscale 10
+	width 100col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/segmentation_sphere.png
+	lyxscale 10
+	width 45col%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/segmentation_colored.png
+	lyxscale 10
+	width 55col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:segmentation"
+
+\end_inset
+
+Plane segmentation.
+ (top) Raw image and depth image.
+ (bottom left) Voxelization of normal vectors on the unit sphere with clusters
+ indicated by different colors.
+ (bottom right) Final plane segmentation after additional clustering for
+ each normal direction along distance from origin.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{-4mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We present experimental results with a hand-held RGB-D sensor.
+ We use the ASUS Xtion Pro Live sensor at 
+\begin_inset Formula $640\times480$
+\end_inset
+
+ resolution.
+ Experiments are run on a laptop computer with i7-3920XM 2.9GHz CPU.
+ No GPU is used.
+ The implementation is multi-threaded, with separate threads for plane detection
+, graph optimization, and visualization.
+ The system runs at 15 frames per second.
+\end_layout
+
+\begin_layout Standard
+Plane segmentation follows 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Holz12robocup"
+
+\end_inset
+
+ with some modifications.
+ The top row in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:segmentation"
+
+\end_inset
+
+ shows the raw sensor data (color and depth) for a single frame.
+ We only use depth information for the segmentation.
+ We start by finding surface normals for each available depth measurement
+ by smoothing over neighboring measurements.
+ We use the PCL 1.7 implementation of IntegralImageNormalEstimation with
+ depthChangeFactor=0.01, smoothingSize=20 and depth dependent smoothing enabled.
+ We then cluster the points in normal space (surface of the unit sphere
+ 
+\begin_inset Formula $S^{2}$
+\end_inset
+
+ in 
+\begin_inset Formula $\mathbb{R}^{3}$
+\end_inset
+
+) by computing a three dimensional voxel grid (cube of side length 20) and
+ merging neighboring voxels that exceed a threshold (1500) for the number
+ of binned normals.
+ For each cluster, we then perform clustering in depth by discretizing in
+ one dimension (
+\begin_inset Formula $0.05m$
+\end_inset
+
+ steps) and merging of neighboring cells that exceed a second threshold
+ (1000).
+ Finally, we fit planes to each cluster of points using the eigenvector
+ corresponding to the smallest eigenvalue as normal direction and filter
+ out points that lie more than 
+\begin_inset Formula $0.02m$
+\end_inset
+
+ from the plane.
+\end_layout
+
+\begin_layout Standard
+We use a simple approach to data association.
+ The optimized previous pose is used to initialize the new pose.
+ Planes detected in the current frame are matched against all planes in
+ the map, selecting the best match for each plane within a given threshold
+ of both angle (
+\begin_inset Formula $8^{\mathbf{\circ}}$
+\end_inset
+
+) and distance (
+\begin_inset Formula $0.1m$
+\end_inset
+
+).
+ While not sufficient in general, this approach is suitable for simple environme
+nts such as those presented here.
+\end_layout
+
+\begin_layout Standard
+Results from walking up a flight of stairs with the RGB-D sensor are shown
+ in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:stairs"
+
+\end_inset
+
+.
+ For a single frame, the top row shows the raw color and depth image as
+ well as the detected planes, where each plane is assigned a random color.
+ The center row shows the final 3D model of the stairs, both as randomly
+ colored planes and as point cloud with color taken from the input frames.
+ In the bottom row, the closeups of the 3D model from front and side show
+ the quality of the reconstruction.
+ Statistics and timing for this sequence are provided in Table
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:timing"
+
+\end_inset
+
+.
+ Parallelization allows running at 15 frames per second with about 
+\begin_inset Formula $1.5$
+\end_inset
+
+ frames of lag.
+\end_layout
+
+\begin_layout Standard
+Results from an office environment are shown in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:office"
+
+\end_inset
+
+.
+ Even though the floor has been observed in two disconnected components
+ left and right of the table, data association has combined those into a
+ single infinite plane.
+ Similarly, the two disconnected components of the ceiling have been merged.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:timing"
+
+\end_inset
+
+Statistics and per frame timing for the stairs sequence in Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:stairs"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="8" columns="2">
+<features tabularvalignment="middle">
+<column alignment="left" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Length of sequence
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $58s$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Number of planes
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $81$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Number of poses
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $868$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Number of plane observations
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $5,934$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Time for normal computation
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $34ms$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Time for plane segmentation
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $33ms$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Time for data association
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $<1ms$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Time for graph optimization
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $24ms$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:conclusion"
+
+\end_inset
+
+Conclusion
+\end_layout
+
+\begin_layout Standard
+We have presented a novel minimal representation for planar features that,
+ unlike previous formulations, is suitable for least-squares optimization
+ with Gauss-Newton, Powell's Dog-Leg and iSAM.
+ Our minimal representation is based on a mapping from the standard homogeneous
+ plane parametrization to a quaternion.
+ Using simulated data we have demonstrated that our minimal representation
+ allows for a faster and more stable optimization.
+ We have also introduced a relative formulation for planes and shown that
+ it improves convergence properties.
+ We have presented real-time experimental results for a simple planar 3D
+ mapping system using a hand-held RGB-D camera.
+\end_layout
+
+\begin_layout Standard
+Our planar mapping system is suitable to demonstrate the planar mapping
+ concept but can be improved in many aspects.
+ Plane detection could be sped up by prediction, or, to also work at lower
+ frame rates, integration of inertial measurements.
+ Data association will need to take into account the boundaries of the physical
+ planar surfaces to successfully work over larger environments.
+ And a standard keyframe approach could further reduce computational cost.
+ While the plane optimization provides an efficient formulation of the estimatio
+n problem, its expressiveness in terms of dense 3D models is limited when
+ compared to more general volumetric solutions 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Whelan15ijrr"
+
+\end_inset
+
+.
+ A promising approach may be to locally use TSDF methods or surfels, anchored
+ relative to the planes, so that they automatically adapt to any large-scale
+ adjustments of the plane graph.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/office_planes.jpg
+	lyxscale 30
+	width 50col%
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename figures/office_color.jpg
+	lyxscale 30
+	width 50col%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:office"
+
+\end_inset
+
+Office sequence.
+ (left) The 3D model with a random color assigned to each plane.
+ (right) The 3D model with color from the input images.
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{-4mm}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+While presented in isolation here, the planar features can be combined with
+ other geometric entities to handle frames with insufficient planar constraints.
+ Examples include point features using a similar homogeneous parametrization
+ introduced in our prior work 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "McDonald11ecmr,McDonald13ras"
+
+\end_inset
+
+, or line features using Plücker coordinates.
+ Beyond homogeneous 4-vectors, finding a minimal representation for objects
+ of other dimensions can be generalized even in absence of a suitable Lie
+ algebra, as described by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "Forstner10accv"
+
+\end_inset
+
+.
+ And even for the homogeneous 4-vector, there are alternative minimal representa
+tions, for example based on Householder matrices as described for general
+ homogeneous entities in the appendix of 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "Hartley03book"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Source code for plane optimization including the simulation code used for
+ this paper is available as part of the iSAM library version 1.8 at 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+url{http://people.csail.mit.edu/kaess/isam}
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Section*
+Acknowledgments
+\end_layout
+
+\begin_layout Plain Layout
+This work was partially supported by ONR grants N00014-12-1-0093 and N00014-14-1
+-0373 and by the American Bureau of Shipping.
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+footnotesize
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "library"
+options "IEEEtranSN"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
