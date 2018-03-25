@@ -20,6 +20,16 @@ For Ubuntu 14.04 (with ROS Indigo installed, for OpenCV and PCL):
 
 sudo apt-get install libpcl-1.7-all-dev libopenni2-dev libeigen3-dev libsuitesparse-dev libsdl1.2-dev libboost-test-dev
 
+Install LCM:
+sudo apt-get install libglib2.0-dev openjdk-6-jdk
+wget -c https://github.com/lcm-proj/lcm/releases/download/v1.3.1/lcm-1.3.1.zip
+unzip lcm-1.3.1.zip
+cd lcm-1.3.1.zip
+./configure
+make -j`nproc`
+sudo make install 
+sudo ldconfig
+
 ----
 Building:
 
