@@ -147,7 +147,6 @@ public:
 
   // recover depth and color image (blocks until frame available)
   bool getFrame(cv::Mat& imageD, cv::Mat& imageC, uint64_t& timestamp) {
-    
     openni::VideoFrameRef depthFrame, colorFrame;
     // blocking call (no need for waitForAnyStream)
 

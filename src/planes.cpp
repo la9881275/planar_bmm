@@ -125,7 +125,7 @@ public:
       if (!isnan(pcl_normal.normal_x)) {
         Eigen::Vector3f normal(pcl_normal.normal_x, pcl_normal.normal_y,
             pcl_normal.normal_z);
-//        cout << pcl_normal.normal_x << " " << pcl_normal.normal_y << " " << pcl_normal.normal_z << endl;
+        // cout << pcl_normal.normal_x << " " << pcl_normal.normal_y << " " << pcl_normal.normal_z << endl;
         normal.normalize();
         normals.row(i) = normal;
         add(normal);
@@ -495,6 +495,7 @@ tuple<planes_t, clusters_t, PCPoint::Ptr> extractPlanes(const cv::Mat& depth,
   cvtColor(color, colorTmp, CV_RGB2BGR);
 
   PCPoint::Ptr cloud = toPointCloud(depth, colorTmp, camParams);
+  std::cout << "cloud->size()" << cloud->points.size() << std::endl;
   _toc("toPointCloud");
 
   // following Dirk Holz 2011 for fast plane extraction
@@ -502,6 +503,7 @@ tuple<planes_t, clusters_t, PCPoint::Ptr> extractPlanes(const cv::Mat& depth,
   // calculate per pixel normal
   _tic();
   PCNormal::Ptr normals = computeNormals(cloud);
+  std::cout << "normals->size()" << normals->size() << std::endl;
   _toc("computeNormals");
 
   double t0 = pcl::getTime();  // plane fitting

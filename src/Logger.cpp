@@ -59,6 +59,9 @@ bool Logger::getFrame(cv::Mat& depth, cv::Mat& color, uint64_t& timestamp) {
 
     // assumes color and depth have already been allocated
     cv::imdecode(_colorCompressed, CV_LOAD_IMAGE_COLOR, &color);
+    // cout << color << std::endl;
+    // cv::imshow("bla",  color);
+    // cv::waitKey(0);
     uncompress(depth.data, &depthSize, &_depthCompressed[0], depthCompressedSize);
 
     return true;

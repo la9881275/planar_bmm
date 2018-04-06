@@ -1,8 +1,9 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.6.0)
 
 project(planar)
 
 add_subdirectory(isam)
+set(CMAKE_CXX_FLAGS "-g -O3 -msse2 -msse3")
 
 if(NOT DEFINED CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "")
   set(CMAKE_BUILD_TYPE Release CACHE STRING
@@ -30,15 +31,15 @@ set(SRCS src/main.cpp src/planes.cpp src/Logger.cpp src/Mapper.cpp src/Visualize
 set_source_files_properties(${SRCS} PROPERTIES COMPILE_FLAGS -std=c++0x)
 
 ##########
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/OpenNI2/libOpenNI2x64.so ${CMAKE_CURRENT_BINARY_DIR}/libOpenNI2.so COPYONLY)
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/OpenNI2/libDummyDevicex64.so ${CMAKE_CURRENT_BINARY_DIR}/OpenNI2/Drivers/libDummyDevice.so COPYONLY)
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/OpenNI2/libOniFilex64.so ${CMAKE_CURRENT_BINARY_DIR}/OpenNI2/Drivers/libOniFile.so COPYONLY)
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/OpenNI2/libPS1080x64.so ${CMAKE_CURRENT_BINARY_DIR}/OpenNI2/Drivers/libPS1080.so COPYONLY)
+	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/OpenNI2/libOpenNI2x64.so ${CMAKE_CURRENT_BINARY_DIR}/libOpenNI2.so COPYONLY)
+	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/OpenNI2/libDummyDevicex64.so ${CMAKE_CURRENT_BINARY_DIR}/OpenNI2/Drivers/libDummyDevice.so COPYONLY)
+	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/OpenNI2/libOniFilex64.so ${CMAKE_CURRENT_BINARY_DIR}/OpenNI2/Drivers/libOniFile.so COPYONLY)
+	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/OpenNI2/libPS1080x64.so ${CMAKE_CURRENT_BINARY_DIR}/OpenNI2/Drivers/libPS1080.so COPYONLY)
 
 set(CMAKE_EXE_LINKER_FLAGS "-Wl,-rpath,. -L${CMAKE_CURRENT_BINARY_DIR}")
 ##########
 
-# iSAM and Cholmod
+# # iSAM and Cholmod
 include_directories(${CHOLMOD_INCLUDES} isam/include)
 
 add_executable(planar ${SRCS} src/Camera.cpp)
@@ -67,12 +68,23 @@ target_link_libraries(lcmlisten
   ${OpenCV_LIBRARIES}
 )
 
-# unit tests
-enable_testing()
-add_test(NAME MyTest COMMAND Test)
-find_package(Boost COMPONENTS unit_test_framework REQUIRED)
-include_directories(${Boost_INCLUDE_DIRS})
-add_definitions(-DBOOST_TEST_DYN_LINK)
-add_executable(Test src/test.cpp)
-target_link_libraries(Test ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+# # unit tests
+# enable_testing()
+# add_test(NAME MyTest COMMAND Test)
+# find_package(Boost COMPONENTS unit_test_framework thread system filesystem REQUIRED)
+# include_directories(${Boost_INCLUDE_DIRS})
+# add_definitions(-DBOOST_TEST_DYN_LINK)
+# add_executable(Test src/test.cpp)
+# target_link_libraries(Test ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
+# mp3guy's logger
+set(CMAKE_EXE_LINKER_FLAGS " ")
+find_package(ZLIB REQUIRED)
+include_directories(${ZLIB_INCLUDE_DIR})
+FILE(GLOB srcs_mp3guy src/LogView.cpp src/RawLogReader.cpp)
+source_group("Source Files" FILES ${srcs_mp3guy} )
+add_executable(LogView ${srcs_mp3guy})
+target_link_libraries(LogView
+                      ${ZLIB_LIBRARY}
+                      ${Boost_LIBRARIES}
+                      ${OpenCV_LIBS})

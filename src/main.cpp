@@ -138,11 +138,12 @@ class Main {
   void processStream() {
 
     if (!_logNameRead.empty()) {
+      cout << "processStream :: !_logNameRead.empty() \n";
       // read logged stream
       Logger logger(_logNameRead);
       while (!stop && logger.getFrame(_depth, _color, _timestamp)) {
+        cout << "_color \n" << _color.rows  << ", " << _color.cols << std::endl;
         processImage();
-
 //        this_thread::sleep_for(chrono::milliseconds(5000));
       }
       if (!stop) {
@@ -266,14 +267,25 @@ public:
     _depthHalf = cv::Mat(height/2, width/2, CV_16UC1);
     _colorHalf = cv::Mat(height/2, width/2, CV_8UC3);
 
+    // Kaess 
+    // _camParams.width = 640;
+    // _camParams.height = 480;
+    // _camParams.fovHorizontal = 1.0226; // 60 degrees
+    // _camParams.fovVertical = 0.796616; // 45 degrees
+    // _camParams.fx = 570.342;
+    // _camParams.fy = _camParams.fx;
+    // _camParams.px = 320;
+    // _camParams.py = 240;
+
+    // ICL-NUIM
     _camParams.width = 640;
     _camParams.height = 480;
-    _camParams.fovHorizontal = 1.0226; // 60 degrees
-    _camParams.fovVertical = 0.796616; // 45 degrees
-    _camParams.fx = 570.342;
-    _camParams.fy = _camParams.fx;
-    _camParams.px = 320;
-    _camParams.py = 240;
+    _camParams.fovHorizontal = 1.5708; // 60 degrees
+    _camParams.fovVertical = 1.5708; // 45 degrees
+    _camParams.fx = 481.20;
+    _camParams.fy = -480.00;
+    _camParams.px = 319.50;
+    _camParams.py = 239.50;
 
     if (!_baseNameRead.empty()) {
       // read image from file; process and exit
