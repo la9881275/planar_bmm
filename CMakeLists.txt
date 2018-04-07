@@ -12,6 +12,17 @@ endif()
 message(STATUS "Build configuration: ${CMAKE_BUILD_TYPE}")
 
 find_package(PCL 1.6 REQUIRED)
+# find_package(libbingham REQUIRED)
+
+### bingham gets installec in the following places
+# $ ls /usr/include/bingham.h, /usr/include/bingham/, /usr/lib/libbingham.a, /usr/lib/bingham/matlab
+
+# use this for linking with bingham, after sudo make install-ing it
+include_directories(/usr/include/bingham)
+
+# uncomment and change following two lines according for linking bingham with hardcoded path
+# include_directories(/home/madratman/projects/slam_project/bingham/c)
+# include_directories(/home/madratman/projects/slam_project/bingham/c/include)
 
 include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
@@ -47,6 +58,12 @@ target_link_libraries(planar ${PCL_LIBRARIES})
 #target_link_libraries(planar -L/usr/lib/OpenNI2/Drivers -lOpenNI2 -lDummyDevice -lOniFile -lPS1080)
 target_link_libraries(planar ${OpenCV_LIBRARIES})
 target_link_libraries(planar isamlib -lz)
+
+# use this for linking with bignham, after sudo make install-ing it
+target_link_libraries(planar /usr/lib/libbingham.a) 
+
+# uncomment followin lines according for linking bingham with hardcoded path
+# target_link_libraries(planar libbingham) 
 
 ##########
 target_link_libraries(planar OpenNI2)
@@ -84,7 +101,4 @@ include_directories(${ZLIB_INCLUDE_DIR})
 FILE(GLOB srcs_mp3guy src/LogView.cpp src/RawLogReader.cpp)
 source_group("Source Files" FILES ${srcs_mp3guy} )
 add_executable(LogView ${srcs_mp3guy})
-target_link_libraries(LogView
-                      ${ZLIB_LIBRARY}
-                      ${Boost_LIBRARIES}
-                      ${OpenCV_LIBS})
+target_link_libraries(LogView ${ZLIB_LIBRARY} ${Boost_LIBRARIES} ${OpenCV_LIBS})

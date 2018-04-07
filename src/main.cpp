@@ -36,6 +36,7 @@ const std::string usage = "\n"
 #include "planes.h"
 #include "Logger.h"
 #include "Mapper.h"
+#include "bingham.h"
 
 using namespace std;
 
@@ -261,23 +262,26 @@ public:
     _mapper = make_shared<Mapper>(_visualizer);
   }
 
-  void run() {
+  void run(string dataset) {
     _depth = cv::Mat(height, width, CV_16UC1);
     _color = cv::Mat(height, width, CV_8UC3);
     _depthHalf = cv::Mat(height/2, width/2, CV_16UC1);
     _colorHalf = cv::Mat(height/2, width/2, CV_8UC3);
 
     // Kaess 
-    // _camParams.width = 640;
-    // _camParams.height = 480;
-    // _camParams.fovHorizontal = 1.0226; // 60 degrees
-    // _camParams.fovVertical = 0.796616; // 45 degrees
-    // _camParams.fx = 570.342;
-    // _camParams.fy = _camParams.fx;
-    // _camParams.px = 320;
-    // _camParams.py = 240;
+    if (dataset.compare("kaess")) {
+      _camParams.width = 640;
+      _camParams.height = 480;
+      _camParams.fovHorizontal = 1.0226; // 60 degrees
+      _camParams.fovVertical = 0.796616; // 45 degrees
+      _camParams.fx = 570.342;
+      _camParams.fy = _camParams.fx;
+      _camParams.px = 320;
+      _camParams.py = 240;
+    }
 
     // ICL-NUIM
+    if (dataset.compare("icl")) {
     _camParams.width = 640;
     _camParams.height = 480;
     _camParams.fovHorizontal = 1.5708; // 60 degrees
@@ -286,6 +290,7 @@ public:
     _camParams.fy = -480.00;
     _camParams.px = 319.50;
     _camParams.py = 239.50;
+    }
 
     if (!_baseNameRead.empty()) {
       // read image from file; process and exit
@@ -317,7 +322,9 @@ public:
 
 int main(int argc, char* argv[]) {
   Main m(argc, argv);
-  m.run();
+  string dataset = "kaess";
+  // string dataset = "icl";
+  m.run(dataset);
 
   return (0);
 }
