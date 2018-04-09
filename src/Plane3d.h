@@ -258,6 +258,7 @@ public:
    * @return Error vector of size 3.
    */
   Eigen::VectorXd basic_error(Selector s = ESTIMATE) const {
+    // std::cout << "ratnesh :: basic error called \n";
     // calculate error in tangent space
     // todo: transform actual measure covariance into tangent space
     Pose3d po = _pose->value(s);
@@ -272,10 +273,12 @@ public:
     Eigen::Vector4d error = p.vector() - _measure.vector();
 #else
     // logmap
+    // std::cout << "ratnesh :: logmap \n";
     Eigen::Quaterniond q(p.vector());
     Eigen::Quaterniond q_measured(_measure.vector());
     Eigen::Quaterniond dq = q * q_measured.conjugate();
 #if 1
+    // std::cout << "ratnesh :: AA error \n";
     Eigen::AngleAxisd aa(dq);
     if (aa.angle() > M_PI) aa.angle() -= 2.*M_PI;
     if (aa.angle() < -M_PI) aa.angle() += 2.*M_PI;

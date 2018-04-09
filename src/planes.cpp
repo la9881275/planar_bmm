@@ -24,6 +24,7 @@
 #include "Visualizer.h"
 #include "Plane3d.h"
 #include "planes.h"
+#include "bingham.h"
 
 using namespace std;
 
@@ -266,6 +267,60 @@ public:
 
 };
 
+// todo we can try clustering planes as well as they are represented by quaternions! 
+// check cluster_bingham.c, test_bingham.c for glover's usage examples 
+void clusterNormalsBingham(const PCNormal::ConstPtr& pcl_normals){
+  bingham_init(); // load LUT for bing constan t
+  bingham_mix_t BM; // bingham mixture model
+  int n = pcl_normals->size(); // no of normals
+  int d = 4; // dimensionality of bingham 
+  // it cant be 3 lol. or else "error: bingham_MLE_NN() is only implemented for d = 4!""
+  double **X = new_matrix2(n, d); // make a matrix, we'll populate this with normals
+
+  // loop over normals, normalize normals, and dump into X
+  // making fake / "pure" quaternions corr to normals
+  for(int i = 0; i < pcl_normals->size(); i++) 
+  {
+    if (!isnan(pcl_normals->at(i).normal_x))
+    {
+      auto normal = pcl_normals->at(i);
+      double norm = sqrt(normal.normal_x*normal.normal_x + 
+                          normal.normal_y*normal.normal_y + 
+                          normal.normal_z*normal.normal_z);
+      X[i][0] = 0.0;
+      X[i][1] = normal.normal_x / norm;
+      X[i][2] = normal.normal_y / norm;
+      X[i][3] = normal.normal_z / norm;
+    }
+  }
+
+  // call BMM clustering!
+  bingham_cluster(&BM, X, n, d);
+
+  printf("B_num = %d\n\n", BM.n);
+  printf("B_weights = [ ");
+  for (int c = 0; c < BM.n; c++)
+    printf("%f ", BM.w[c]);
+  printf("]\n\n");
+
+  for (int c = 0; c < BM.n; c++) {
+    printf("B(%d).V = [ ", c+1);
+    for (int i = 0; i < d; i++) {
+      for (int j = 0; j < d-1; j++)
+  printf("%f ", BM.B[c].V[j][i]);
+      printf("; ");
+    }
+    printf("];\n\n");
+
+    printf("B(%d).Z = [ ", c+1);
+    for (int i = 0; i < d-1; i++)
+      printf("%f ", BM.B[c].Z[i]);
+    printf("];\n\n");
+
+    printf("B(%d).F = %f;\n\n", c+1, BM.B[c].F);
+  }
+}
+
 PCNormal::Ptr computeNormals(const PCPoint::ConstPtr& cloud) {
   PCNormal::Ptr normalsOut(new PCNormal);
 
@@ -503,8 +558,22 @@ tuple<planes_t, clusters_t, PCPoint::Ptr> extractPlanes(const cv::Mat& depth,
   // calculate per pixel normal
   _tic();
   PCNormal::Ptr normals = computeNormals(cloud);
+
   std::cout << "normals->size()" << normals->size() << std::endl;
   _toc("computeNormals");
+
+  _tic();
+  clusterNormalsBingham(normals);
+  _toc("clusterNormalsBingham");
+
+  // save normals to disk to play with BMM clustering?
+  // for (auto pcl_normal : *normals) {
+  //   if (!isnan(pcl_normal.normal_x)) {
+  //     Eigen::Vector3f normal(pcl_normal.normal_x, pcl_normal.normal_y, pcl_normal.normal_z);
+  //     cout << pcl_normal.normal_x << " " << pcl_normal.normal_y << " " << pcl_normal.normal_z << endl;
+  //     normal.normalize();
+  //   }
+  // }
 
   double t0 = pcl::getTime();  // plane fitting
 
@@ -550,12 +619,11 @@ tuple<planes_t, clusters_t, PCPoint::Ptr> extractPlanes(const cv::Mat& depth,
 
   cout << "num final planes: " << planes.size() << endl;
 
-#if 0
+#if 1
   visualizeSegmentation("normalClusters", normalClusters, cloud);
   visualizeSegmentation("planeClusters", planeClusters, cloud);
-  while (cv::waitKey(10) == -1) {
-  }
-  cv::waitKey(10);
+  // while (cv::waitKey(10) == -1) {}
+  cv::waitKey(1);
 #endif
 
   return make_tuple(planes, clusters, cloud);
