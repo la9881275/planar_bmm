@@ -26,6 +26,11 @@
 #include "planes.h"
 #include "bingham.h"
 
+// write to file 
+#include <iostream>
+#include <fstream>
+#include <string>  
+
 using namespace std;
 
 struct voxel_t {
@@ -35,6 +40,9 @@ struct voxel_t {
 
 // cube of 100 voxels side length yields resolution of approximately 1.1 degrees
 const int nVoxelsCluster = 20; //15;
+
+// for saving normals
+int counter = 0; 
 
 // minimum number of normals in a voxel to be used
 const int minNormals = 1500; //1000;
@@ -300,7 +308,7 @@ void clusterNormalsBingham(const PCNormal::ConstPtr& pcl_normals){
   printf("B_num = %d\n\n", BM.n);
   printf("B_weights = [ ");
   for (int c = 0; c < BM.n; c++)
-    printf("%f ", BM.w[c]);
+    printf("%f ", BM.w[c]); 
   printf("]\n\n");
 
   for (int c = 0; c < BM.n; c++) {
@@ -566,14 +574,23 @@ tuple<planes_t, clusters_t, PCPoint::Ptr> extractPlanes(const cv::Mat& depth,
   clusterNormalsBingham(normals);
   _toc("clusterNormalsBingham");
 
+  // open txt file in normals folder 
+  ofstream myfile;
+  myfile.open ("../normals/" + to_string(counter) + ".txt");
+
   // save normals to disk to play with BMM clustering?
-  // for (auto pcl_normal : *normals) {
-  //   if (!isnan(pcl_normal.normal_x)) {
-  //     Eigen::Vector3f normal(pcl_normal.normal_x, pcl_normal.normal_y, pcl_normal.normal_z);
-  //     cout << pcl_normal.normal_x << " " << pcl_normal.normal_y << " " << pcl_normal.normal_z << endl;
-  //     normal.normalize();
-  //   }
-  // }
+  for (auto pcl_normal : *normals) {
+    if (!isnan(pcl_normal.normal_x)) {
+      Eigen::Vector3f normal(pcl_normal.normal_x, pcl_normal.normal_y, pcl_normal.normal_z);
+      myfile << pcl_normal.normal_x << " " << pcl_normal.normal_y << " " << pcl_normal.normal_z << endl;
+      normal.normalize();
+    }
+  }
+
+  // increment file name 
+  counter = counter + 1; 
+
+  myfile.close();
 
   double t0 = pcl::getTime();  // plane fitting
 
