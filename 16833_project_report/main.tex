@@ -1,0 +1,124 @@
+\documentclass[12pt]{article}
+
+\usepackage[english]{babel}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{ragged2e}
+\usepackage{mathtools}
+\usepackage{spverbatim}
+\usepackage{float}
+\usepackage{graphicx}
+\graphicspath{ {images/} }	
+
+\vspace{-7em}
+
+\title{%
+	Modeling Uncertainty with the Bingham distribution for Planar SLAM \\
+  \large Midterm Report: 16-833, Spring 2018}
+    
+
+\author{\small{Ratnesh Madaan \texttt{[ratneshm]} \qquad Sudharshan Suresh \texttt{[sudhars1]} \qquad  Ankita Kalra \texttt{[akalra1]}}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\raggedright
+\justify
+
+\vspace{-2em}
+
+\begin{spverbatim}
+Rick's comments: Looks like an interesting idea.  I am very excited to see the final report. Please include more details comparing and contrasting [1] with your implementation in both midterm and final report.  For the final report, we'd suggest at least 1 page detailing [1], your similarities and differences, as well as the equations for the filter from [2].
+\end{spverbatim}
+
+\section{Introduction}
+- An introduction to your project (may re-use content from proposal).  Include a mention of impact and novelty.
+
+\label{sec:abstract}
+In this project, we propose a RGB-D SLAM framework which includes scene segmentation using surface normals, apart from the localization and mapping steps. 
+Taking inspiration from \cite{straub}, we represent the maps as surfels, which are localized planes represented by their position, surface normal or orientation, color, and radius. 
+For the course project we will ignore the color of the surfels, use a constant radius, and we will use quaternions to represent surface normals. 
+We propose to maintain a Gaussian for positional uncertainty and a Bingham distribution for the quaternion representing surface normal, for each \textit{landmark} surfel.
+The map-wide scene segmentation will be captured by a weighted mixture of Bingham distributions, a Bingham Mixture Model (BMM) \cite{glover_bmm}.
+We adapt the directional SLAM framework proposed by \cite{straub}, and differ from him by proposing to represent surface normals as quaternions, using the Bingham distribution \cite{glover} to model uncertainty over them, and finally, using a BMM to capture map wide scene segmentation. 
+Doing so entails formulation of observation models of the normals, inference by calculating the posterior over the normals, scene wide segmentation labels given the measurements.
+In addition, we will also model the uncertainty over the robot's position and orientation using Gaussians and Binghams, using Kalman and Bingham filters \cite{glover} respectively to update them. 
+Note that there is a decoupling between uncertainty over orientations and positions in our proposed formulation. Our framework can also extended the work in \cite{kaess}, which parameterizes a plane by a quaternion. 
+
+
+\vspace{1em}
+
+The measurements in our case will be point observations $p_i$, and surface normals, $n_i$. 
+Now, we need to define a sensor model, which will update both the Gaussian and the Bingham for each landmark as an observation for the same comes in. 
+While the Gaussian update is trivial, the orientation update is the interesting part. 
+We have a belief of the $i^{th}$ surfel's orientation, in the form of a quaternion Bingham distribution, $B_i$, and need to update it when we receive a measurement quaternion $z_q$. 
+For the above, we will use the first order quaternion Bingham Filter developed in \cite{glover} which is pretty similar to the Kalman Filter in spirit but models uncertainty over the rotational manifold exactly.
+Here, we note that there will be no control input as we are just \textit{tracking} the orientation of the landmark.
+The measurement uncertainty will be modeled by another Bingham, which will have $99\%$ of its probability mass within a solid angle of $18^{\circ}$, for the reasons mentioned in Section 5.1 of \cite{straub}.
+
+\vspace{1em}
+
+\cite{straub} posits that the inherent structure in our world can be captured by low entropy distributions over surface normals over the whole map, which is an extension of the Manhattan World assumption.
+In our formulation, we will capture this scene wide distribution over surface normals, expressed as quaternions, with a Bingham Mixture Model, instead of a Dirichlet process von-Mises-Fischer mixture model as done in \cite{straub}.
+This leads to an implicit scene wide surface normal segmentation, where each class corresponds to a component of the BMM. 
+A new observation can simply be classified by assigning the label corresponding to the Maximum Likelihood component of the mixture, for example.  
+An advantage of using Binghams, apart from the fact they capture the quaternion manifold exactly, is that the inference over surface normals comes out to be a Bingham naturally (equation 19, \cite{straub}). 
+Over the course of the project, we will need to derive various posteriors - updating the landmark positions, orientations and the component distributions of the scene segmentation BMM given new measurements. 
+
+\section{Literature Review}
+
+- A short literature review, at least two sources. (We will ask for 3 in the final report).
+
+1. Kaess's infinite planes paper
+
+2. Arun's paper 
+
+\section{Progress}
+
+- A brief discussion of the work you have completed thus far.
+- Discussion of how you are doing relative to your proposed time-line from the proposal.
+- Are you facing any technical challenges?
+
+1. Acquiring and running Kaess's code (LOL)
+\section{Software and Datasets}
+
+- Describe the data you have collected thus far. 
+\begin{enumerate}
+\item \textbf{NYU Depth Dataset V2} \cite{NYU}: Consists of video sequences (RGB-D) of indoor scenes, recorded with a Microsoft Kinect. 
+\item \textbf{libDirectional} \cite{libdirectional}: Library for directional statistics and recursive estimation on manifolds. 
+\item \textbf{Bingham Statistics Library}:  Implementation of Bingham distributions on unit spheres $\mathcal{S}^1$, $\mathcal{S}^2$, and $\mathcal{S}^3$. 
+\end{enumerate}
+
+\section{Implementation and Code}
+- Describe the code you have implemented thus far.
+
+
+\section{Preliminary Results}
+- Preliminary results, if any.
+
+\section{Further Timeline}
+- What is your remaining timeline/activity plan?
+
+\textbf{Week 1 - 2} : Problem formulation and familiarization with libraries \\ 
+\textbf{Week 3 - 4} : Rudimentary proof-of-concept testing \\
+\textbf{Week 5 - 6} : Implementation and refinement \\
+\textbf{Week 7} : Documentation and wrap-up \\
+
+\begin{thebibliography}{9}
+\scriptsize 
+\bibitem{straub}
+Straub, Julian, et al. "Direction-Aware Semi-Dense SLAM." arXiv preprint arXiv:1709.05774 (2017).
+\bibitem{glover}
+Glover, Jared, and Leslie Pack Kaelbling. "Tracking 3-D rotations with the quaternion Bingham filter." (2013)
+\bibitem{glover_bmm}
+Glover, Jared, Gary Bradski, and Radu Bogdan Rusu. "Monte carlo pose estimation with quaternion kernels and the bingham distribution." Robotics: science and systems. Vol. 7. 2012.
+\bibitem{NYU}
+Silberman, Nathan, et al. "Indoor segmentation and support inference from rgbd images." European Conference on Computer Vision. Springer, Berlin, Heidelberg, 2012
+\bibitem{libdirectional}
+Kurz, G., et al. "libDirectional." (2015)
+\bibitem{kaess}
+Kaess, Michael. "Simultaneous localization and mapping with infinite planes." Robotics and Automation (ICRA), 2015 IEEE International Conference on. IEEE, 2015.
+
+\end{thebibliography}
+\end{document}
