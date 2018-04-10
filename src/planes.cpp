@@ -306,28 +306,51 @@ void clusterNormalsBingham(const PCNormal::ConstPtr& pcl_normals){
   // call BMM clustering!
   bingham_cluster(&BM, X, n, d);
 
+  // save binghams to file 
+  
+  // // open txt file in normals folder 
+  ofstream bingham_file;
+
+  const int dir_err = mkdir("binghams", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+  bingham_file.open ("binghams/" + to_string(counter) + ".txt");
+
+  cout<<"BINGHAM file: "<<"binghams/" + to_string(counter) + ".txt"<<endl;
+
   printf("B_num = %d\n\n", BM.n);
   printf("B_weights = [ ");
-  for (int c = 0; c < BM.n; c++)
+  for (int c = 0; c < BM.n; c++){
     printf("%f ", BM.w[c]); 
+    bingham_file<<BM.w[c]<<" "; 
+  }
   printf("]\n\n");
+  bingham_file<<endl; 
 
   for (int c = 0; c < BM.n; c++) {
     printf("B(%d).V = [ ", c+1);
     for (int i = 0; i < d; i++) {
-      for (int j = 0; j < d-1; j++)
-  printf("%f ", BM.B[c].V[j][i]);
+      for (int j = 0; j < d-1; j++){
+        printf("%f ", BM.B[c].V[j][i]);
+        bingham_file<<BM.B[c].V[j][i]<<" ";
+      }
       printf("; ");
     }
     printf("];\n\n");
+    bingham_file<<"\r"; 
 
     printf("B(%d).Z = [ ", c+1);
-    for (int i = 0; i < d-1; i++)
+    for (int i = 0; i < d-1; i++){
       printf("%f ", BM.B[c].Z[i]);
+      bingham_file<<BM.B[c].Z[i]<<" ";
+    }
     printf("];\n\n");
+    bingham_file<<"\r"; 
 
     printf("B(%d).F = %f;\n\n", c+1, BM.B[c].F);
+    bingham_file<<BM.B[c].F<<endl;
   }
+
+  bingham_file.close();
+
 }
 
 PCNormal::Ptr computeNormals(const PCPoint::ConstPtr& cloud) {
@@ -575,7 +598,9 @@ tuple<planes_t, clusters_t, PCPoint::Ptr> extractPlanes(const cv::Mat& depth,
   clusterNormalsBingham(normals);
   _toc("clusterNormalsBingham");
 
-  // open txt file in normals folder 
+  // save normals to file 
+
+  // // open txt file in normals folder 
   ofstream myfile;
 
 
@@ -594,9 +619,11 @@ tuple<planes_t, clusters_t, PCPoint::Ptr> extractPlanes(const cv::Mat& depth,
   }
 
   // increment file name 
-  counter = counter + 1; 
 
   myfile.close();
+
+  counter = counter + 1; 
+
 
   double t0 = pcl::getTime();  // plane fitting
 
