@@ -30,6 +30,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>  
+#include <sys/stat.h>
 
 using namespace std;
 
@@ -576,7 +577,12 @@ tuple<planes_t, clusters_t, PCPoint::Ptr> extractPlanes(const cv::Mat& depth,
 
   // open txt file in normals folder 
   ofstream myfile;
-  myfile.open ("../normals/" + to_string(counter) + ".txt");
+
+
+  const int dir_err = mkdir("normals", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+  myfile.open ("normals/" + to_string(counter) + ".txt");
+
+  cout<<"FILENAME: "<<"normals/" + to_string(counter) + ".txt"<<endl;
 
   // save normals to disk to play with BMM clustering?
   for (auto pcl_normal : *normals) {
